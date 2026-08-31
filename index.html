@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  ============================================================
+  AURELIA DENTAL HOUSE — Premium Dental Clinic Website
+  ============================================================
+  DESIGN TOKEN SYSTEM (implemented in style.css, noted here
+  for continuity across index.html / style.css / script.js)
+
+  COLOR
+    --paper:      #FBFAF7   base background, warm off-white (not stark white)
+    --mint-100:   #EAF4F1   soft section tint
+    --mint-200:   #DCECE7   deeper tint / borders
+    --teal-900:   #0E3B36   primary dark (nav, footer, headline ink)
+    --teal-700:   #155E54   secondary dark
+    --teal-600:   #1C6E63   accent / buttons / links
+    --gold-500:   #B8905A   luxury accent — signature "Smile Arc" motif, used sparingly
+    --ink:        #16231F   body text
+
+  TYPE
+    Display:  "Fraunces"  (serif, editorial, luxury) — headlines only, weight 300–600
+    Body:     "Manrope"   (geometric sans) — paragraphs, UI
+    Eyebrow/Utility: "Manrope" uppercase, tracked — labels, stats, captions
+
+  SIGNATURE ELEMENT — "The Smile Arc"
+    A thin, gold, hand-drawn-feeling arc (SVG) that recurs across the page:
+    as a section divider, as an underline beneath headings, as the progress
+    ring for stats, and as the connecting line in the treatment timeline.
+    It literally traces the curve of a smile — an authentic motif for a
+    dental brand rather than a decorative wave or generic gradient blob.
+
+  LAYOUT
+    Hero: asymmetric split, portrait image right, floating rating badge
+    overlapping the image edge, thin gold arc behind the headline.
+    Sections alternate --paper and --mint-100 backgrounds to create calm
+    rhythm without hard dividers.
+  ============================================================
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurelia Dental House — Premium Cosmetic &amp; Family Dentistry</title>
+<meta name="description" content="Aurelia Dental House is a premium dental studio offering cosmetic dentistry, implants, orthodontics and family care led by Dr. Meera Anand, DDS. Book your consultation today.">
+<meta name="theme-color" content="#0E3B36">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Aurelia Dental House — Premium Cosmetic & Family Dentistry">
+<meta property="og:description" content="A calmer kind of dental care. Cosmetic dentistry, implants, orthodontics and family care in one premium studio.">
+<meta property="og:type" content="website">
+
+<!-- Preconnect for web fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Favicon (inline SVG smile-arc mark) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9c2 4 6 6.5 8 6.5S18 13 20 9' stroke='%230E3B36' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Skip link for keyboard / screen-reader users -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- ============================================================
+     1. ANNOUNCEMENT BAR
+     ============================================================ -->
+<div class="announcement-bar" role="region" aria-label="Announcement">
+  <div class="announcement-bar__track">
+    <p class="announcement-bar__item">✦ New patient offer — complimentary smile consultation this month</p>
+    <p class="announcement-bar__item">✦ Now open Saturdays, 9 AM – 2 PM</p>
+    <p class="announcement-bar__item">✦ Dental emergency? Call <a href="tel:+15551234567">+1 (555) 123-4567</a> — same-day slots held daily</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     2. PREMIUM STICKY GLASS NAVBAR
+     ============================================================ -->
+<header class="site-header" id="site-header">
+  <nav class="navbar" aria-label="Primary">
+    <a href="#main-content" class="navbar__logo" aria-label="Aurelia Dental House — home">
+      <svg class="navbar__logo-mark" width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <circle cx="17" cy="17" r="16" stroke="#B8905A" stroke-width="1.2"/>
+        <path d="M8 15c3 6 8 9.5 9 9.5s6-3.5 9-9.5" stroke="#0E3B36" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="navbar__logo-text">Aurelia<span class="navbar__logo-text--accent">Dental House</span></span>
+    </a>
+
+    <ul class="navbar__links" id="navbar-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#why-us">Why Us</a></li>
+      <li><a href="#doctor">Our Doctor</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#gallery">Smile Gallery</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#location">Location</a></li>
+      <li><a href="#token-tracker">Track Token</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="tel:+15551234567" class="navbar__phone" aria-label="Call Aurelia Dental House">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.2c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>(555) 123-4567</span>
+      </a>
+      <a href="#appointment" class="btn btn--primary btn--small">Book Appointment</a>
+    </div>
+
+    <button class="navbar__toggle" id="navbar-toggle" aria-expanded="false" aria-controls="navbar-links" aria-label="Toggle navigation menu">
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+  </nav>
+</header>
+
+<main id="main-content">
+
+  <!-- ============================================================
+       3. HERO SECTION
+       ============================================================ -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero__decoration" aria-hidden="true">
+      <svg class="hero__arc" viewBox="0 0 600 300" fill="none">
+        <path d="M20 60c150 180 410 180 560 0" stroke="#B8905A" stroke-width="1.5" stroke-dasharray="2 8" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="hero__container">
+      <div class="hero__content">
+        <p class="eyebrow">Premium Dental Studio · Est. 2011</p>
+        <h1 class="hero__heading" id="hero-heading">
+          A calmer kind of<br>
+          <span class="hero__heading-accent">dental care.</span>
+        </h1>
+        <p class="hero__subtext">
+          Aurelia Dental House pairs advanced clinical technique with an
+          unhurried, hospitality-led experience — cosmetic dentistry,
+          implants, orthodontics and family care under one calm roof.
+        </p>
+
+        <div class="hero__cta-row">
+          <a href="#appointment" class="btn btn--primary btn--large">
+            Book a Consultation
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#services" class="btn btn--ghost btn--large">Explore Services</a>
+        </div>
+
+        <div class="hero__rating" aria-label="Rated 4.9 out of 5 by 1,240 patients">
+          <div class="hero__rating-stars" aria-hidden="true">★★★★★</div>
+          <p><strong>4.9/5</strong> from 1,240+ patient reviews</p>
+        </div>
+      </div>
+
+      <div class="hero__media">
+        <picture>
+          <source media="(max-width: 640px)" srcset="images/hero-doctor.jpg">
+          <img
+            src="https://placehold.co/900x1080/EAF4F1/0E3B36?text=Doctor+with+Patient+%E2%80%94+Replace+Image&font=raleway"
+            alt="Dr. Meera Anand smiling with a patient in the Aurelia Dental House treatment room"
+            class="hero__image"
+            width="900" height="1080"
+            loading="eager"
+            fetchpriority="high">
+        </picture>
+
+        <div class="hero__floating-card hero__floating-card--top" role="note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.6 6.6L21 10l-5 4.4L17.4 21 12 17.3 6.6 21 8 14.4 3 10l6.4-1.4L12 2z" fill="#B8905A"/></svg>
+          <div>
+            <p class="hero__floating-card-title">Best Cosmetic Clinic</p>
+            <p class="hero__floating-card-sub">City Wellness Awards, 2025</p>
+          </div>
+        </div>
+
+        <div class="hero__floating-card hero__floating-card--bottom" role="note">
+          <div class="hero__floating-avatars" aria-hidden="true">
+            <img src="https://placehold.co/48x48/DCECE7/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
+            <img src="https://placehold.co/48x48/EAF4F1/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
+            <img src="https://placehold.co/48x48/DCECE7/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
+          </div>
+          <div>
+            <p class="hero__floating-card-title">12,400+ patients</p>
+            <p class="hero__floating-card-sub">treated since 2011</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. TRUST BADGES
+       ============================================================ -->
+  <section class="trust-badges" aria-label="Certifications and affiliations">
+    <div class="trust-badges__container">
+      <p class="trust-badges__label">Trusted &amp; accredited by</p>
+      <ul class="trust-badges__list">
+        <li>American Dental Association</li>
+        <li>Invisalign&reg; Diamond Provider</li>
+        <li>Straumann Implant Partner</li>
+        <li>ISO 9001:2015 Certified Facility</li>
+        <li>Academy of General Dentistry</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. STATISTICS COUNTER
+       ============================================================ -->
+  <section class="stats" aria-labelledby="stats-heading">
+    <div class="section-container">
+      <h2 class="visually-hidden" id="stats-heading">Our track record</h2>
+      <div class="stats__grid">
+        <div class="stat-card">
+          <p class="stat-card__number" data-count-to="14" data-suffix="+">0</p>
+          <p class="stat-card__label">Years in Practice</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__number" data-count-to="12400" data-suffix="+">0</p>
+          <p class="stat-card__label">Patients Treated</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__number" data-count-to="98" data-suffix="%">0</p>
+          <p class="stat-card__label">Patient Satisfaction</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card__number" data-count-to="30" data-suffix="+">0</p>
+          <p class="stat-card__label">Treatments Offered</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. SERVICES
+       ============================================================ -->
+  <section class="services" id="services" aria-labelledby="services-heading">
+    <div class="section-container">
+      <div class="section-heading">
+        <p class="eyebrow">What We Treat</p>
+        <h2 class="section-heading__title" id="services-heading">Care built around your smile</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="section-heading__sub">From routine care to full smile transformations, every treatment is planned around your comfort, timeline and goals.</p>
+      </div>
+
+      <div class="services__grid">
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2c-2.5 0-4 1.6-4 3.8 0 1.6.6 2.4.6 4 0 2-1.1 3.4-1.1 6.2 0 2.6.9 4 2 4 1.4 0 1.3-3.2 2.5-3.2s1.1 3.2 2.5 3.2c1.1 0 2-1.4 2-4 0-2.8-1.1-4.2-1.1-6.2 0-1.6.6-2.4.6-4C16 3.6 14.5 2 12 2z" stroke="#1C6E63" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Cosmetic Dentistry</h3>
+          <p class="service-card__text">Veneers, whitening and smile design crafted to look natural and last for years.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="8" y="10" width="8" height="10" rx="2" stroke="#1C6E63" stroke-width="1.5"/><path d="M12 10V5m0 0l-2.5 2.5M12 5l2.5 2.5" stroke="#1C6E63" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Dental Implants</h3>
+          <p class="service-card__text">Permanent, single-visit-planned implants with digital precision and minimal downtime.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 8c4-3 12-3 16 0M4 14c4 3 12 3 16 0" stroke="#1C6E63" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Invisalign &amp; Orthodontics</h3>
+          <p class="service-card__text">Clear aligners and modern braces for adults and teens, mapped with 3D simulation.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#1C6E63" stroke-width="1.5"/><path d="M12 8v4l3 2" stroke="#1C6E63" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Root Canal Therapy</h3>
+          <p class="service-card__text">Pain-managed, microscope-guided root canal treatment completed in as little as one visit.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.6-9.5-9C.5 8.2 3 4 7 4c2 0 3.6 1.2 5 3 1.4-1.8 3-3 5-3 4 0 6.5 4.2 4.5 8-2.5 4.4-9.5 9-9.5 9z" stroke="#1C6E63" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Pediatric Dentistry</h3>
+          <p class="service-card__text">Gentle, playful care that helps young patients feel safe from their very first visit.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="#1C6E63" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="service-card__title">Emergency Care</h3>
+          <p class="service-card__text">Same-day appointments for pain, trauma or breakages — call any time.</p>
+          <a href="#appointment" class="service-card__link">Learn more →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7. WHY CHOOSE US
+       ============================================================ -->
+  <section class="why-us" id="why-us" aria-labelledby="why-us-heading">
+    <div class="section-container why-us__container">
+      <div class="why-us__media">
+        <img
+          src="https://placehold.co/760x600/DCECE7/0E3B36?text=Clinic+Interior+%E2%80%94+Replace+Image&font=raleway"
+          alt="A treatment suite at Aurelia Dental House with natural light and calming decor"
+          loading="lazy" width="760" height="600">
+      </div>
+
+      <div class="why-us__content">
+        <p class="eyebrow">Why Patients Choose Aurelia</p>
+        <h2 class="section-heading__title" id="why-us-heading">Clinical precision, hospitality-level care</h2>
+
+        <ul class="why-us__list">
+          <li class="why-us__item">
+            <span class="why-us__item-icon" aria-hidden="true">✓</span>
+            <div>
+              <h3>Board-certified specialists</h3>
+              <p>Every treatment plan is reviewed by a specialist in that exact field — not a generalist.</p>
+            </div>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__item-icon" aria-hidden="true">✓</span>
+            <div>
+              <h3>Digital-first diagnostics</h3>
+              <p>3D imaging and intraoral scanning replace guesswork with a precise, visual treatment plan.</p>
+            </div>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__item-icon" aria-hidden="true">✓</span>
+            <div>
+              <h3>Sedation &amp; comfort options</h3>
+              <p>From noise-cancelling headphones to sedation dentistry, anxiety is planned for, not ignored.</p>
+            </div>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__item-icon" aria-hidden="true">✓</span>
+            <div>
+              <h3>Transparent pricing</h3>
+              <p>You receive a written estimate before treatment begins — no surprise costs, ever.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       8. MEET OUR DOCTOR
+       ============================================================ -->
+  <section class="doctor" id="doctor" aria-labelledby="doctor-heading">
+    <div class="section-container doctor__container">
+      <div class="doctor__media">
+        <img
+          src="https://placehold.co/620x760/EAF4F1/0E3B36?text=Dr.+Meera+Anand+%E2%80%94+Replace+Image&font=raleway"
+          alt="Portrait of Dr. Meera Anand, DDS, Lead Dentist at Aurelia Dental House"
+          loading="lazy" width="620" height="760">
+        <div class="doctor__media-badge">
+          <p class="doctor__media-badge-number">14+</p>
+          <p class="doctor__media-badge-label">Years of<br>Experience</p>
+        </div>
+      </div>
+
+      <div class="doctor__content">
+        <p class="eyebrow">Meet Our Doctor</p>
+        <h2 class="section-heading__title" id="doctor-heading">Dr. Meera Anand, DDS</h2>
+        <p class="doctor__role">Lead Dentist &amp; Founder, Cosmetic &amp; Implant Specialist</p>
+
+        <blockquote class="doctor__quote">
+          “I believe dentistry should feel like being cared for, not processed.
+          Every plan we write starts with listening.”
+        </blockquote>
+
+        <p class="doctor__bio">
+          Dr. Anand completed her DDS at the University of Michigan School of
+          Dentistry, followed by an advanced fellowship in prosthodontics.
+          She founded Aurelia Dental House in 2011 to combine rigorous
+          clinical standards with an unhurried, patient-first experience,
+          and has since led the clinic through more than 12,000 patient
+          treatments.
+        </p>
+
+        <ul class="doctor__certificates">
+          <li>DDS — University of Michigan School of Dentistry</li>
+          <li>Fellowship in Prosthodontics — advanced restorative &amp; implant care</li>
+          <li>Invisalign&reg; Diamond Provider, 10+ consecutive years</li>
+          <li>Member, American Academy of Cosmetic Dentistry</li>
+        </ul>
+
+        <a href="#appointment" class="btn btn--primary">Book with Dr. Anand</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       9. TREATMENT PROCESS TIMELINE
+       ============================================================ -->
+  <section class="process" id="process" aria-labelledby="process-heading">
+    <div class="section-container">
+      <div class="section-heading section-heading--center">
+        <p class="eyebrow">How It Works</p>
+        <h2 class="section-heading__title" id="process-heading">Your treatment journey</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline__step">
+          <span class="timeline__index">01</span>
+          <h3 class="timeline__title">Consultation</h3>
+          <p class="timeline__text">We listen to your concerns and goals, then examine your oral health in full.</p>
+        </li>
+        <li class="timeline__step">
+          <span class="timeline__index">02</span>
+          <h3 class="timeline__title">Digital Diagnostics</h3>
+          <p class="timeline__text">3D scans and imaging build an accurate picture of what your treatment needs.</p>
+        </li>
+        <li class="timeline__step">
+          <span class="timeline__index">03</span>
+          <h3 class="timeline__title">Custom Treatment Plan</h3>
+          <p class="timeline__text">You receive a written plan with options, timelines and transparent pricing.</p>
+        </li>
+        <li class="timeline__step">
+          <span class="timeline__index">04</span>
+          <h3 class="timeline__title">Treatment</h3>
+          <p class="timeline__text">Procedures are carried out with sedation and comfort options available throughout.</p>
+        </li>
+        <li class="timeline__step">
+          <span class="timeline__index">05</span>
+          <h3 class="timeline__title">Aftercare &amp; Follow-Up</h3>
+          <p class="timeline__text">We check in after every major procedure to make sure your recovery stays on track.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       10. BEFORE & AFTER COMPARISON SLIDER
+       ============================================================ -->
+  <section class="before-after" aria-labelledby="before-after-heading">
+    <div class="section-container">
+      <div class="section-heading section-heading--center">
+        <p class="eyebrow">Real Results</p>
+        <h2 class="section-heading__title" id="before-after-heading">See the transformation</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="section-heading__sub">Drag the slider to compare — every image is an actual Aurelia patient, shared with permission.</p>
+      </div>
+
+      <div class="ba-slider" data-ba-slider>
+        <div class="ba-slider__image-wrap ba-slider__image-wrap--before">
+          <img src="https://placehold.co/1000x700/DCECE7/0E3B36?text=BEFORE+%E2%80%94+Replace+Image&font=raleway" alt="Patient's smile before cosmetic treatment" draggable="false">
+          <span class="ba-slider__tag ba-slider__tag--before">Before</span>
+        </div>
+        <div class="ba-slider__image-wrap ba-slider__image-wrap--after" data-ba-after>
+          <img src="https://placehold.co/1000x700/EAF4F1/0E3B36?text=AFTER+%E2%80%94+Replace+Image&font=raleway" alt="Patient's smile after cosmetic treatment" draggable="false">
+          <span class="ba-slider__tag ba-slider__tag--after">After</span>
+        </div>
+
+        <input
+          type="range"
+          class="ba-slider__range"
+          min="0" max="100" value="50"
+          aria-label="Drag to compare before and after images"
+          data-ba-input>
+        <div class="ba-slider__handle" data-ba-handle aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="#0E3B36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       11. SMILE GALLERY
+       ============================================================ -->
+  <section class="gallery" id="gallery" aria-labelledby="gallery-heading">
+    <div class="section-container">
+      <div class="section-heading section-heading--center">
+        <p class="eyebrow">Smile Gallery</p>
+        <h2 class="section-heading__title" id="gallery-heading">Smiles crafted at Aurelia</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="gallery__grid">
+        <button class="gallery__item gallery__item--tall" data-gallery-trigger data-full="https://placehold.co/900x1200/EAF4F1/0E3B36?text=Smile+01&font=raleway" aria-label="Open smile gallery image 1">
+          <img src="https://placehold.co/450x600/EAF4F1/0E3B36?text=Smile+01&font=raleway" alt="Cosmetic dentistry result, patient smile 1" loading="lazy" width="450" height="600">
+        </button>
+        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/DCECE7/0E3B36?text=Smile+02&font=raleway" aria-label="Open smile gallery image 2">
+          <img src="https://placehold.co/450x450/DCECE7/0E3B36?text=Smile+02&font=raleway" alt="Cosmetic dentistry result, patient smile 2" loading="lazy" width="450" height="450">
+        </button>
+        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/EAF4F1/0E3B36?text=Smile+03&font=raleway" aria-label="Open smile gallery image 3">
+          <img src="https://placehold.co/450x450/EAF4F1/0E3B36?text=Smile+03&font=raleway" alt="Cosmetic dentistry result, patient smile 3" loading="lazy" width="450" height="450">
+        </button>
+        <button class="gallery__item gallery__item--tall" data-gallery-trigger data-full="https://placehold.co/900x1200/DCECE7/0E3B36?text=Smile+04&font=raleway" aria-label="Open smile gallery image 4">
+          <img src="https://placehold.co/450x600/DCECE7/0E3B36?text=Smile+04&font=raleway" alt="Cosmetic dentistry result, patient smile 4" loading="lazy" width="450" height="600">
+        </button>
+        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/EAF4F1/0E3B36?text=Smile+05&font=raleway" aria-label="Open smile gallery image 5">
+          <img src="https://placehold.co/450x450/EAF4F1/0E3B36?text=Smile+05&font=raleway" alt="Cosmetic dentistry result, patient smile 5" loading="lazy" width="450" height="450">
+        </button>
+        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/DCECE7/0E3B36?text=Smile+06&font=raleway" aria-label="Open smile gallery image 6">
+          <img src="https://placehold.co/450x450/DCECE7/0E3B36?text=Smile+06&font=raleway" alt="Cosmetic dentistry result, patient smile 6" loading="lazy" width="450" height="450">
+        </button>
+      </div>
+    </div>
+
+    <!-- Lightbox for gallery -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Smile gallery image viewer" hidden>
+      <button class="lightbox__close" id="lightbox-close" aria-label="Close image viewer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#FBFAF7" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <img class="lightbox__image" id="lightbox-image" src="" alt="">
+    </div>
+  </section>
+
+  <!-- ============================================================
+       12. TESTIMONIALS SLIDER
+       ============================================================ -->
+  <section class="testimonials" id="testimonials" aria-labelledby="testimonials-heading">
+    <div class="section-container">
+      <div class="section-heading section-heading--center">
+        <p class="eyebrow">Patient Stories</p>
+        <h2 class="section-heading__title" id="testimonials-heading">What our patients say</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="testimonial-slider" data-testimonial-slider>
+        <div class="testimonial-slider__track" data-testimonial-track>
+
+          <article class="testimonial-card" role="group" aria-label="Testimonial 1 of 5">
+            <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+            <p class="testimonial-card__text">“I'd put off veneers for years out of fear. The team walked me through every step and the result looks completely natural. Best decision I've made for my confidence.”</p>
+            <div class="testimonial-card__author">
+              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=JR" alt="" width="56" height="56">
+              <div>
+                <p class="testimonial-card__name">Jordan R.</p>
+                <p class="testimonial-card__meta">Cosmetic Veneers, 2025</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card" role="group" aria-label="Testimonial 2 of 5">
+            <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+            <p class="testimonial-card__text">“My implant procedure was painless and the follow-up care was outstanding. Dr. Anand personally called to check on me the next day.”</p>
+            <div class="testimonial-card__author">
+              <img src="https://placehold.co/56x56/DCECE7/0E3B36?text=PS" alt="" width="56" height="56">
+              <div>
+                <p class="testimonial-card__name">Priya S.</p>
+                <p class="testimonial-card__meta">Dental Implant, 2024</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card" role="group" aria-label="Testimonial 3 of 5">
+            <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+            <p class="testimonial-card__text">“My son used to cry at the dentist. Now he asks when his next cleaning is. The pediatric team is genuinely wonderful.”</p>
+            <div class="testimonial-card__author">
+              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=MT" alt="" width="56" height="56">
+              <div>
+                <p class="testimonial-card__name">Marcus T.</p>
+                <p class="testimonial-card__meta">Pediatric Care, 2025</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card" role="group" aria-label="Testimonial 4 of 5">
+            <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+            <p class="testimonial-card__text">“Eighteen months into Invisalign and the digital simulation they showed me on day one was almost exactly how my smile turned out.”</p>
+            <div class="testimonial-card__author">
+              <img src="https://placehold.co/56x56/DCECE7/0E3B36?text=AK" alt="" width="56" height="56">
+              <div>
+                <p class="testimonial-card__name">Aisha K.</p>
+                <p class="testimonial-card__meta">Invisalign, 2023–2024</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card" role="group" aria-label="Testimonial 5 of 5">
+            <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+            <p class="testimonial-card__text">“Chipped a tooth on a Sunday and they saw me within two hours. Calm, professional, and it never felt like an emergency once I arrived.”</p>
+            <div class="testimonial-card__author">
+              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=DL" alt="" width="56" height="56">
+              <div>
+                <p class="testimonial-card__name">David L.</p>
+                <p class="testimonial-card__meta">Emergency Care, 2025</p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="testimonial-slider__controls">
+          <button class="testimonial-slider__arrow" data-testimonial-prev aria-label="Previous testimonial">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="testimonial-slider__dots" data-testimonial-dots role="tablist" aria-label="Select testimonial"></div>
+          <button class="testimonial-slider__arrow" data-testimonial-next aria-label="Next testimonial">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       13. FAQ ACCORDION
+       ============================================================ -->
+  <section class="faq" id="faq" aria-labelledby="faq-heading">
+    <div class="section-container faq__container">
+      <div class="section-heading">
+        <p class="eyebrow">Good to Know</p>
+        <h2 class="section-heading__title" id="faq-heading">Frequently asked questions</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="accordion" data-accordion>
+        <div class="accordion__item">
+          <h3 class="accordion__header">
+            <button class="accordion__trigger" aria-expanded="true" aria-controls="faq-panel-1" id="faq-trigger-1">
+              Do you accept dental insurance?
+              <svg class="accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-panel-1" role="region" aria-labelledby="faq-trigger-1">
+            <p class="accordion__panel-inner">Yes — we work with most major PPO insurance plans and offer a complimentary benefits check before your first visit so you know your coverage in advance.</p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 class="accordion__header">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">
+              How long does a smile makeover take?
+              <svg class="accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-panel-2" role="region" aria-labelledby="faq-trigger-2">
+            <p class="accordion__panel-inner">Most cosmetic cases are completed in 2–4 visits over 2–3 weeks. Your exact timeline depends on the treatments involved and is confirmed during your consultation.</p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 class="accordion__header">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">
+              Is sedation available for anxious patients?
+              <svg class="accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-panel-3" role="region" aria-labelledby="faq-trigger-3">
+            <p class="accordion__panel-inner">Yes. We offer nitrous oxide, oral conscious sedation and comfort accommodations such as noise-cancelling headphones and weighted blankets.</p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 class="accordion__header">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="faq-panel-4" id="faq-trigger-4">
+              Do you treat children?
+              <svg class="accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-panel-4" role="region" aria-labelledby="faq-trigger-4">
+            <p class="accordion__panel-inner">Yes, our pediatric team welcomes patients from age two and up, with appointments designed to build comfort and trust over time.</p>
+          </div>
+        </div>
+
+        <div class="accordion__item">
+          <h3 class="accordion__header">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="faq-panel-5" id="faq-trigger-5">
+              What happens during a dental emergency?
+              <svg class="accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="faq-panel-5" role="region" aria-labelledby="faq-trigger-5">
+            <p class="accordion__panel-inner">Call our emergency line and we'll hold a same-day slot for pain, trauma, or breakages — most patients are seen within a few hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       14. EMERGENCY CTA
+       ============================================================ -->
+  <section class="emergency-cta" aria-labelledby="emergency-heading">
+    <div class="section-container emergency-cta__container">
+      <div class="emergency-cta__icon" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="#FBFAF7" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="emergency-cta__text">
+        <h2 id="emergency-heading">Dental emergency right now?</h2>
+        <p>We hold same-day slots every day for urgent pain, trauma or breakages. Call and we'll guide you through what to do next.</p>
+      </div>
+      <a href="tel:+15551234567" class="btn btn--gold btn--large">Call (555) 123-4567</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       15. LOCATION SECTION
+       ============================================================ -->
+  <section class="location" id="location" aria-labelledby="location-heading">
+    <div class="section-container location__container">
+      <div class="location__content">
+        <p class="eyebrow">Visit the Studio</p>
+        <h2 class="section-heading__title" id="location-heading">Find us in the city center</h2>
+
+        <ul class="location__details">
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 1114 0c0 5.4-7 11-7 11z" stroke="#1C6E63" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="#1C6E63" stroke-width="1.5"/></svg>
+            <div>
+              <p class="location__details-label">Address</p>
+              <p>482 Magnolia Avenue, Suite 300, Riverside District</p>
+            </div>
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.2c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" stroke="#1C6E63" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <div>
+              <p class="location__details-label">Phone</p>
+              <p><a href="tel:+15551234567">+1 (555) 123-4567</a></p>
+            </div>
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#1C6E63" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="#1C6E63" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div>
+              <p class="location__details-label">Email</p>
+              <p><a href="mailto:hello@aureliadentalhouse.com">hello@aureliadentalhouse.com</a></p>
+            </div>
+          </li>
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#1C6E63" stroke-width="1.5"/><path d="M12 7v5l3.5 2" stroke="#1C6E63" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <div>
+              <p class="location__details-label">Hours</p>
+              <p>Mon–Fri 8 AM–6 PM · Sat 9 AM–2 PM · Sun Closed</p>
+            </div>
+          </li>
+        </ul>
+
+        <a href="https://maps.google.com/?q=482+Magnolia+Avenue+Riverside+District" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
+          Get Directions
+        </a>
+      </div>
+
+      <div class="location__map">
+        <iframe
+          title="Map showing the location of Aurelia Dental House"
+          src="https://maps.google.com/maps?q=city%20center%20dental%20clinic&t=&z=14&ie=UTF8&iwloc=&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LIVE TOKEN DISPLAY
+       ============================================================ -->
+  <section class="live-token" id="live-token" aria-labelledby="live-token-heading">
+    <div class="section-container live-token__container">
+      <h2 class="visually-hidden" id="live-token-heading">Live token status</h2>
+      <div class="live-token__grid">
+        <div class="live-token__card live-token__card--serving">
+          <p class="live-token__label">Now Serving</p>
+          <p class="live-token__value" data-live-serving>—</p>
+        </div>
+        <div class="live-token__card">
+          <p class="live-token__label">Next</p>
+          <p class="live-token__value" data-live-next>—</p>
+        </div>
+        <div class="live-token__card">
+          <p class="live-token__label">Waiting</p>
+          <p class="live-token__value" data-live-waiting>—</p>
+          <p class="live-token__sub">patients</p>
+        </div>
+      </div>
+      <p class="live-token__status" data-live-status role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TOKEN STATUS TRACKER
+       ============================================================ -->
+  <section class="token-tracker" id="token-tracker" aria-labelledby="token-tracker-heading">
+    <div class="section-container token-tracker__container">
+      <div class="section-heading section-heading--center">
+        <p class="eyebrow">Already Booked?</p>
+        <h2 class="section-heading__title" id="token-tracker-heading">Track your appointment</h2>
+        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <p class="section-heading__sub">Enter your token and the last 4 digits of the phone number you booked with to see your live status and waiting position.</p>
+      </div>
+
+      <form class="token-tracker__form" id="token-tracker-form" novalidate>
+        <label for="tokenInput" class="visually-hidden">Token number</label>
+        <input type="text" id="tokenInput" name="tokenInput" placeholder="e.g. D-7K2N9Q" autocomplete="off" autocapitalize="characters" inputmode="text">
+        <label for="tokenPhoneLast4" class="visually-hidden">Last 4 digits of your phone number</label>
+        <input type="text" id="tokenPhoneLast4" name="tokenPhoneLast4" placeholder="Last 4 digits" autocomplete="off" inputmode="numeric" maxlength="4" pattern="[0-9]{4}">
+        <button type="submit" class="btn btn--primary">
+          Track
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+
+      <p class="token-tracker__status" data-tracker-status role="status" aria-live="polite"></p>
+
+      <div class="token-result" id="token-result" hidden>
+        <div class="token-result__header">
+          <div>
+            <p class="token-result__label">Token</p>
+            <p class="token-result__token" data-result-token></p>
+          </div>
+          <span class="status-badge" data-result-status-badge></span>
+        </div>
+
+        <dl class="token-result__grid">
+          <div>
+            <dt>Patient</dt>
+            <dd data-result-name></dd>
+          </div>
+          <div>
+            <dt>Doctor</dt>
+            <dd data-result-doctor></dd>
+          </div>
+          <div>
+            <dt>Date</dt>
+            <dd data-result-date></dd>
+          </div>
+          <div>
+            <dt>Time</dt>
+            <dd data-result-time></dd>
+          </div>
+          <div>
+            <dt>Waiting Position</dt>
+            <dd data-result-position></dd>
+          </div>
+          <div>
+            <dt>Estimated Wait</dt>
+            <dd data-result-wait></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       16. APPOINTMENT SECTION
+       ============================================================ -->
+  <section class="appointment" id="appointment" aria-labelledby="appointment-heading">
+    <div class="section-container appointment__container">
+      <div class="appointment__intro">
+        <p class="eyebrow">Book Your Visit</p>
+        <h2 class="section-heading__title" id="appointment-heading">Request an appointment</h2>
+        <p class="section-heading__sub">
+          Fill in your details below — you'll receive a token number
+          instantly that you can use to track your live status.
+        </p>
+
+        <ul class="appointment__points">
+          <li>✦ Instant token number after booking</li>
+          <li>✦ Same-day emergency slots available</li>
+          <li>✦ Track your live waiting position anytime</li>
+        </ul>
+      </div>
+
+      <form class="appointment__form" id="appointment-form" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="patientName">Patient name</label>
+            <input type="text" id="patientName" name="patientName" autocomplete="name" required aria-required="true">
+            <span class="form-field__error" data-error-for="patientName"></span>
+          </div>
+          <div class="form-field">
+            <label for="mobile">Mobile number</label>
+            <input type="tel" id="mobile" name="mobile" autocomplete="tel" required aria-required="true">
+            <span class="form-field__error" data-error-for="mobile"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="0" max="120" required aria-required="true">
+            <span class="form-field__error" data-error-for="age"></span>
+          </div>
+          <div class="form-field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required aria-required="true">
+              <option value="" selected disabled>Select gender</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+            <span class="form-field__error" data-error-for="gender"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="treatment">Treatment required</label>
+            <select id="treatment" name="treatment" required aria-required="true">
+              <option value="" selected disabled>Select a treatment</option>
+              <option value="Cosmetic Dentistry">Cosmetic Dentistry</option>
+              <option value="Dental Implants">Dental Implants</option>
+              <option value="Invisalign / Orthodontics">Invisalign / Orthodontics</option>
+              <option value="Root Canal Therapy">Root Canal Therapy</option>
+              <option value="Pediatric Dentistry">Pediatric Dentistry</option>
+              <option value="Emergency Care">Emergency Care</option>
+              <option value="General Checkup">General Checkup</option>
+            </select>
+            <span class="form-field__error" data-error-for="treatment"></span>
+          </div>
+          <div class="form-field">
+            <label for="preferredDate">Preferred date</label>
+            <input type="date" id="preferredDate" name="preferredDate" required aria-required="true">
+            <span class="form-field__error" data-error-for="preferredDate"></span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="preferredTime">Preferred time</label>
+          <select id="preferredTime" name="preferredTime" required aria-required="true">
+            <option value="" selected disabled>Select a time window</option>
+            <option value="Morning (8 AM – 11 AM)">Morning (8 AM – 11 AM)</option>
+            <option value="Midday (11 AM – 2 PM)">Midday (11 AM – 2 PM)</option>
+            <option value="Afternoon (2 PM – 6 PM)">Afternoon (2 PM – 6 PM)</option>
+          </select>
+          <span class="form-field__error" data-error-for="preferredTime"></span>
+        </div>
+
+        <div class="form-field">
+          <label for="notes">Additional notes (optional)</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Tell us about symptoms, prior treatment, or scheduling constraints..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--large form-submit" id="appointment-submit">
+          Book Appointment
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <p class="appointment__form-note" role="status" aria-live="polite" data-form-status></p>
+
+        <div class="token-success" id="token-success" hidden>
+          <p class="token-success__label">Your Token Number</p>
+          <p class="token-success__value" data-token-value></p>
+          <p class="token-success__hint">Save this number — use the tracker above anytime to check your live status and waiting position.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     17. FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="section-container site-footer__grid">
+
+    <div class="site-footer__brand">
+      <a href="#main-content" class="navbar__logo navbar__logo--footer" aria-label="Aurelia Dental House — home">
+        <svg class="navbar__logo-mark" width="30" height="30" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="17" cy="17" r="16" stroke="#B8905A" stroke-width="1.2"/>
+          <path d="M8 15c3 6 8 9.5 9 9.5s6-3.5 9-9.5" stroke="#FBFAF7" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="navbar__logo-text navbar__logo-text--footer">Aurelia<span class="navbar__logo-text--accent">Dental House</span></span>
+      </a>
+      <p class="site-footer__tagline">A calmer kind of dental care, since 2011.</p>
+
+      <div class="site-footer__social" aria-label="Social media">
+        <a href="#" aria-label="Aurelia Dental House on Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </a>
+        <a href="#" aria-label="Aurelia Dental House on Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h2.5l.5-3H14V9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#" aria-label="Aurelia Dental House on LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M7 10v6M7 7.5v.01M11 16v-6M11 16v-3.5c0-1.4 1-2.5 2.5-2.5S16 11.1 16 12.5V16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <nav class="site-footer__links" aria-label="Footer quick links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#doctor">Our Doctor</a></li>
+        <li><a href="#gallery">Smile Gallery</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#token-tracker">Track Token</a></li>
+      </ul>
+    </nav>
+
+    <nav class="site-footer__links" aria-label="Footer services links">
+      <h3>Services</h3>
+      <ul>
+        <li><a href="#services">Cosmetic Dentistry</a></li>
+        <li><a href="#services">Dental Implants</a></li>
+        <li><a href="#services">Invisalign</a></li>
+        <li><a href="#services">Pediatric Dentistry</a></li>
+        <li><a href="#services">Emergency Care</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__newsletter">
+      <h3>Stay in the Loop</h3>
+      <p>Occasional care tips and clinic news — no spam.</p>
+      <form class="newsletter-form" id="newsletter-form">
+        <label for="newsletter-email" class="visually-hidden">Email address</label>
+        <input type="email" id="newsletter-email" name="newsletter-email" placeholder="you@example.com" required aria-required="true">
+        <button type="submit" aria-label="Subscribe to newsletter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#FBFAF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+      <p class="newsletter-form__status" role="status" aria-live="polite" data-newsletter-status></p>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="section-container site-footer__bottom-inner">
+      <p>&copy; <span id="current-year">2026</span> Aurelia Dental House. All rights reserved.</p>
+      <ul class="site-footer__legal">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Accessibility</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button class="back-to-top" id="back-to-top" aria-label="Back to top" hidden>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<!-- Official Supabase JS client (UMD build via CDN). Must load before
+     script.js, which reads SUPABASE_URL / SUPABASE_ANON_KEY from
+     script.js itself and creates the client from window.supabase. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>
