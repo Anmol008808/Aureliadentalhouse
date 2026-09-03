@@ -1,912 +1,1592 @@
 /* ================================================================
-   AURELIA DENTAL HOUSE — script.js
+   AURELIA DENTAL HOUSE — style.css
    ================================================================
    Table of Contents
-   1.  Utilities
-   2.  Supabase Config & Client
-   3.  Announcement Bar (seamless marquee)
-   4.  Navbar (scroll state + mobile toggle + link close)
-   5.  Scroll Reveal Animations
-   6.  Stats Counter Animation
-   7.  Before & After Comparison Slider
-   8.  Smile Gallery Lightbox
-   9.  Testimonials Slider
-   10. FAQ Accordion
-   11. Appointment Booking Form (live backend submission + token)
-   12. Live Token Display
-   13. Token Status Tracker
-   14. Newsletter Form
-   15. Back To Top
-   16. Footer Current Year
-   17. Placeholder Link Guard (prevents jump-to-top)
-   18. Init
+   1.  Design Tokens (Custom Properties)
+   2.  Reset & Base
+   3.  Typography Utilities
+   4.  Layout Utilities
+   5.  Buttons
+   6.  Announcement Bar
+   7.  Navbar
+   8.  Hero
+   9.  Trust Badges
+   10. Stats
+   11. Services
+   12. Why Choose Us
+   13. Doctor
+   14. Timeline / Process
+   15. Before & After Slider
+   16. Gallery + Lightbox
+   17. Testimonials
+   18. FAQ Accordion
+   19. Emergency CTA
+   20. Location
+   21. Appointment Form
+   22. Footer
+   23. Back to Top
+   24. Animations
+   25. Responsive Breakpoints
+   26. Reduced Motion & Accessibility
    ================================================================ */
 
-(function () {
-  "use strict";
+/* ----------------------------------------------------------------
+   1. DESIGN TOKENS
+   ---------------------------------------------------------------- */
+:root {
+  /* Color */
+  --paper: #FBFAF7;
+  --mint-100: #EAF4F1;
+  --mint-200: #DCECE7;
+  --teal-900: #0E3B36;
+  --teal-800: #123F39;
+  --teal-700: #155E54;
+  --teal-600: #1C6E63;
+  --teal-600-rgb: 28, 110, 99;
+  --gold-500: #B8905A;
+  --gold-500-rgb: 184, 144, 90;
+  --gold-100: #F3E9DB;
+  --success-600: #2F7A4D;
+  --rust-500: #C0503F;
+  --ink: #16231F;
+  --ink-soft: #445048;
+  --white: #FFFFFF;
+  --border-soft: rgba(14, 59, 54, 0.1);
+  --shadow-color: 14, 59, 54;
 
-  /* ----------------------------------------------------------------
-     1. UTILITIES
-     ---------------------------------------------------------------- */
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
+  /* Type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  const $ = (selector, scope = document) => scope.querySelector(selector);
-  const $$ = (selector, scope = document) =>
-    Array.from(scope.querySelectorAll(selector));
+  /* Type Scale (fluid) */
+  --fs-h1: clamp(2.5rem, 4.4vw + 1rem, 4.5rem);
+  --fs-h2: clamp(2rem, 2.4vw + 1rem, 3rem);
+  --fs-h3: clamp(1.25rem, 0.8vw + 1rem, 1.5rem);
+  --fs-lead: clamp(1.05rem, 0.5vw + 0.9rem, 1.25rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-eyebrow: 0.8125rem;
 
-  function debounce(fn, delay = 150) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), delay);
-    };
+  /* Spacing */
+  --space-section: clamp(4rem, 6vw, 7rem);
+  --container-width: 1240px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--ease-out);
+  --transition-med: 0.4s var(--ease-out);
+  --transition-slow: 0.7s var(--ease-out);
+
+  /* Elevation */
+  --shadow-sm: 0 2px 10px rgba(var(--shadow-color), 0.06);
+  --shadow-md: 0 10px 30px rgba(var(--shadow-color), 0.1);
+  --shadow-lg: 0 24px 60px rgba(var(--shadow-color), 0.16);
+}
+
+/* ----------------------------------------------------------------
+   2. RESET & BASE
+   ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 130px;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+svg { flex-shrink: 0; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+
+/* Visible focus state for all interactive elements (accessibility) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -50px;
+  left: 12px;
+  background: var(--teal-900);
+  color: var(--paper);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  z-index: 2000;
+  transition: top var(--transition-fast);
+}
+.skip-link:focus { top: 12px; }
+
+/* ----------------------------------------------------------------
+   3. TYPOGRAPHY UTILITIES
+   ---------------------------------------------------------------- */
+h1, h2, h3, .section-heading__title, .hero__heading {
+  font-family: var(--font-display);
+  color: var(--teal-900);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-600);
+  margin: 0 0 0.9rem;
+}
+
+.section-heading__title {
+  font-size: var(--fs-h2);
+  margin-bottom: 0.6rem;
+}
+
+.section-heading__arc {
+  display: block;
+  width: 120px;
+  height: 18px;
+  margin: 0.4rem 0 1.1rem;
+}
+
+.section-heading--center .section-heading__arc { margin-left: auto; margin-right: auto; }
+
+.section-heading__sub {
+  font-size: var(--fs-lead);
+  color: var(--ink-soft);
+  max-width: 620px;
+  font-weight: 400;
+}
+
+.section-heading {
+  margin-bottom: clamp(2.5rem, 4vw, 4rem);
+}
+
+.section-heading--center {
+  text-align: center;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.section-heading--center .section-heading__sub { margin-left: auto; margin-right: auto; }
+
+/* ----------------------------------------------------------------
+   4. LAYOUT UTILITIES
+   ---------------------------------------------------------------- */
+.section-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+section { padding-block: var(--space-section); }
+
+.services,
+.stats,
+.why-us,
+.gallery,
+.faq { background: var(--paper); }
+
+.trust-badges,
+.process,
+.testimonials,
+.location { background: var(--mint-100); }
+
+/* ----------------------------------------------------------------
+   5. BUTTONS
+   ---------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: var(--radius-pill);
+  padding: 0.95rem 1.7rem;
+  white-space: nowrap;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.btn svg { transition: transform var(--transition-fast); }
+.btn:hover svg { transform: translateX(3px); }
+
+.btn--primary {
+  background: var(--teal-900);
+  color: var(--paper);
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover {
+  background: var(--teal-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--teal-900);
+  border-color: var(--border-soft);
+}
+.btn--ghost:hover {
+  background: var(--mint-100);
+  border-color: var(--teal-600);
+  transform: translateY(-2px);
+}
+
+.btn--gold {
+  background: var(--gold-500);
+  color: var(--teal-900);
+}
+.btn--gold:hover {
+  background: #a67d49;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--large { padding: 1.1rem 2.1rem; font-size: 1rem; }
+.btn--small { padding: 0.65rem 1.25rem; font-size: 0.875rem; }
+
+/* ----------------------------------------------------------------
+   6. ANNOUNCEMENT BAR
+   ---------------------------------------------------------------- */
+.announcement-bar {
+  background: var(--teal-900);
+  color: var(--mint-100);
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: var(--fs-small);
+}
+
+.announcement-bar__track {
+  display: inline-flex;
+  animation: marquee 26s linear infinite;
+  padding-block: 0.55rem;
+}
+
+.announcement-bar__item {
+  padding-inline: 2.5rem;
+  border-right: 1px solid rgba(251, 250, 247, 0.18);
+}
+
+.announcement-bar a {
+  color: var(--gold-500);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* Duplicate content is added via JS to make the loop seamless */
+
+/* ----------------------------------------------------------------
+   7. NAVBAR
+   ---------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  width: 100%;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: var(--container-width);
+  margin: 0.75rem auto 0;
+  padding: 0.7rem 1.1rem 0.7rem 1.4rem;
+  background: rgba(251, 250, 247, 0.92);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-med), background var(--transition-med);
+}
+
+/* Lighter blur only where the GPU can comfortably composite it */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .navbar {
+    background: rgba(251, 250, 247, 0.72);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
   }
+}
 
-  // Throttles a function to run at most once per animation frame, so it
-  // stays perfectly in sync with scrolling instead of "catching up" all at
-  // once when the user stops scrolling (which reads as a sudden jump/glitch).
-  function rafThrottle(fn) {
-    let ticking = false;
-    return (...args) => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        fn(...args);
-        ticking = false;
-      });
-    };
+.site-header.is-scrolled .navbar {
+  box-shadow: var(--shadow-md);
+  background: rgba(251, 250, 247, 0.88);
+}
+
+.navbar__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.navbar__logo-text {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--teal-900);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.navbar__logo-text--accent {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-500);
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 1.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--teal-900);
+}
+
+.navbar__links a {
+  position: relative;
+  padding-block: 0.3rem;
+}
+.navbar__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: 0;
+  height: 2px;
+  background: var(--gold-500);
+  transition: right var(--transition-fast);
+}
+.navbar__links a:hover::after { right: 0; }
+
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-shrink: 0;
+}
+
+.navbar__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--teal-900);
+}
+.navbar__phone svg { color: var(--gold-500); }
+
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.navbar__toggle-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  margin-inline: auto;
+  background: var(--teal-900);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+.navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(2) { opacity: 0; }
+.navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ----------------------------------------------------------------
+   8. HERO
+   ---------------------------------------------------------------- */
+.hero {
+  position: relative;
+  padding-top: clamp(3rem, 6vw, 5.5rem);
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  overflow: hidden;
+}
+
+.hero__decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero__arc {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: min(700px, 90vw);
+  transform: translateX(-50%);
+  opacity: 0.6;
+}
+
+.hero__container {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.hero__heading {
+  font-size: var(--fs-h1);
+  margin-bottom: 1.4rem;
+}
+.hero__heading-accent { color: var(--teal-600); font-style: italic; }
+
+.hero__subtext {
+  font-size: var(--fs-lead);
+  color: var(--ink-soft);
+  max-width: 520px;
+  margin-bottom: 2.1rem;
+}
+
+.hero__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2.3rem;
+}
+
+.hero__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+}
+.hero__rating-stars { color: var(--gold-500); letter-spacing: 2px; }
+.hero__rating strong { color: var(--teal-900); }
+
+.hero__media {
+  position: relative;
+}
+.hero__image {
+  width: 100%;
+  aspect-ratio: 5 / 6;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero__floating-card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: rgba(251, 250, 247, 0.96);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.15rem;
+  box-shadow: var(--shadow-md);
+  max-width: 240px;
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .hero__floating-card {
+    background: rgba(251, 250, 247, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
+}
 
-  function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
+.hero__floating-card--top {
+  top: 8%;
+  left: -8%;
+  animation: float 5s ease-in-out infinite;
+}
+.hero__floating-card--bottom {
+  bottom: 7%;
+  right: -6%;
+  animation: float 5.5s ease-in-out infinite 0.4s;
+}
+
+.hero__floating-card-title { font-weight: 700; font-size: 0.85rem; color: var(--teal-900); }
+.hero__floating-card-sub { font-size: 0.75rem; color: var(--ink-soft); }
+
+.hero__floating-avatars { display: flex; }
+.hero__floating-avatars img {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  margin-left: -10px;
+}
+.hero__floating-avatars img:first-child { margin-left: 0; }
+
+/* ----------------------------------------------------------------
+   9. TRUST BADGES
+   ---------------------------------------------------------------- */
+.trust-badges { padding-block: 2.6rem; }
+.trust-badges__container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+  text-align: center;
+}
+.trust-badges__label {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal-700);
+  margin-bottom: 1.1rem;
+}
+.trust-badges__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem 2.6rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--teal-900);
+  opacity: 0.85;
+}
+
+/* ----------------------------------------------------------------
+   10. STATS
+   ---------------------------------------------------------------- */
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.stat-card {
+  text-align: center;
+  padding: 2.2rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--mint-100);
+  border: 1px solid var(--mint-200);
+}
+.stat-card__number {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3vw, 3rem);
+  color: var(--teal-900);
+  font-weight: 600;
+}
+.stat-card__label {
+  margin-top: 0.4rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--teal-700);
+}
+
+/* ----------------------------------------------------------------
+   11. SERVICES
+   ---------------------------------------------------------------- */
+.services__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6rem;
+}
+
+.service-card {
+  padding: 2.2rem 1.9rem;
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+.service-card__icon {
+  width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mint-100);
+  border-radius: 50%;
+  margin-bottom: 1.3rem;
+  transition: background var(--transition-med);
+}
+.service-card:hover .service-card__icon { background: var(--gold-100); }
+
+.service-card__title {
+  font-size: var(--fs-h3);
+  margin-bottom: 0.55rem;
+}
+.service-card__text {
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  margin-bottom: 1.1rem;
+}
+.service-card__link {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--teal-600);
+}
+
+/* ----------------------------------------------------------------
+   12. WHY CHOOSE US
+   ---------------------------------------------------------------- */
+.why-us__container {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+.why-us__media img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 5/4;
+  object-fit: cover;
+}
+.why-us__list { margin-top: 1.8rem; display: flex; flex-direction: column; gap: 1.4rem; }
+.why-us__item { display: flex; gap: 1rem; align-items: flex-start; }
+.why-us__item-icon {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--teal-900);
+  color: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.why-us__item h3 { font-size: 1.05rem; margin-bottom: 0.25rem; color: var(--teal-900); font-family: var(--font-body); font-weight: 700; }
+.why-us__item p { font-size: 0.92rem; color: var(--ink-soft); }
+
+/* ----------------------------------------------------------------
+   13. DOCTOR
+   ---------------------------------------------------------------- */
+.doctor__container {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+.doctor__media { position: relative; }
+.doctor__media img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  width: 100%;
+}
+.doctor__media-badge {
+  position: absolute;
+  bottom: -1.4rem;
+  right: -1.4rem;
+  background: var(--teal-900);
+  color: var(--paper);
+  border-radius: 50%;
+  width: 118px; height: 118px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.doctor__media-badge-number { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; }
+.doctor__media-badge-label { font-size: 0.65rem; letter-spacing: 0.04em; margin-top: 0.15rem; }
+
+.doctor__role { color: var(--teal-600); font-weight: 700; font-size: 0.95rem; margin-bottom: 1.4rem; }
+
+.doctor__quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--teal-900);
+  border-left: 3px solid var(--gold-500);
+  padding-left: 1.3rem;
+  margin-bottom: 1.4rem;
+  line-height: 1.5;
+}
+
+.doctor__bio { color: var(--ink-soft); margin-bottom: 1.5rem; }
+
+.doctor__certificates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.doctor__certificates li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+.doctor__certificates li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.5em;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold-500);
+}
+
+/* ----------------------------------------------------------------
+   14. TIMELINE / PROCESS
+   ---------------------------------------------------------------- */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.4rem;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--gold-500) 0 8px, transparent 8px 16px);
+  z-index: 0;
+}
+.timeline__step {
+  position: relative;
+  z-index: 1;
+  background: var(--paper);
+  border: 1px solid var(--mint-200);
+  border-radius: var(--radius-md);
+  padding: 1.8rem 1.4rem;
+  transition: transform var(--transition-med), box-shadow var(--transition-med);
+}
+.timeline__step:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.timeline__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--teal-900);
+  color: var(--gold-500);
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.timeline__title { font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--teal-900); }
+.timeline__text { font-size: 0.88rem; color: var(--ink-soft); }
+
+/* ----------------------------------------------------------------
+   15. BEFORE & AFTER SLIDER
+   ---------------------------------------------------------------- */
+.ba-slider {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 10/7;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  touch-action: pan-y;
+}
+.ba-slider__image-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.ba-slider__image-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+.ba-slider__image-wrap--after {
+  clip-path: inset(0 50% 0 0);
+}
+.ba-slider__tag {
+  position: absolute;
+  top: 1rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(14,59,54,0.75);
+  color: var(--paper);
+}
+.ba-slider__tag--before { left: 1rem; }
+.ba-slider__tag--after { right: 1rem; }
+
+.ba-slider__range {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 3;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ba-slider__handle {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 46px; height: 46px;
+  margin-top: auto; margin-bottom: auto;
+  align-self: center;
+  transform: translate(-50%, 0);
+  top: calc(50% - 23px);
+  background: var(--paper);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  z-index: 2;
+}
+.ba-slider__handle::before,
+.ba-slider__handle::after {
+  content: "";
+  position: absolute;
+  top: -1000px; bottom: -1000px;
+  width: 2px;
+  background: var(--paper);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ----------------------------------------------------------------
+   16. GALLERY + LIGHTBOX
+   ---------------------------------------------------------------- */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 220px;
+  gap: 1rem;
+}
+.gallery__item {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  grid-row: span 1;
+}
+.gallery__item--tall { grid-row: span 2; }
+.gallery__item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+.gallery__item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(14,59,54,0.35), transparent 50%);
+  opacity: 0;
+  transition: opacity var(--transition-med);
+}
+.gallery__item:hover img { transform: scale(1.06); }
+.gallery__item:hover::after { opacity: 1; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(14, 20, 18, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox[hidden] { display: none; }
+.lightbox__image {
+  max-width: min(900px, 100%);
+  max-height: 85vh;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+}
+.lightbox__close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox__close:hover { background: rgba(255,255,255,0.22); }
+
+/* ----------------------------------------------------------------
+   17. TESTIMONIALS
+   ---------------------------------------------------------------- */
+.testimonial-slider { position: relative; overflow: hidden; max-width: 100%; }
+.testimonial-slider__track {
+  display: flex;
+  transition: transform var(--transition-med);
+}
+.testimonial-card {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding: 2.6rem clamp(1.5rem, 6vw, 5rem);
+  text-align: center;
+}
+.testimonial-card__stars { color: var(--gold-500); letter-spacing: 3px; margin-bottom: 1.3rem; }
+.testimonial-card__text {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  color: var(--teal-900);
+  line-height: 1.5;
+  margin-bottom: 1.8rem;
+}
+.testimonial-card__author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.testimonial-card__author img { width: 48px; height: 48px; border-radius: 50%; }
+.testimonial-card__name { font-weight: 700; color: var(--teal-900); text-align: left; }
+.testimonial-card__meta { font-size: 0.8rem; color: var(--ink-soft); text-align: left; }
+
+.testimonial-slider__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  margin-top: 1.5rem;
+}
+.testimonial-slider__arrow {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal-900);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.testimonial-slider__arrow:hover { background: var(--teal-900); color: var(--paper); }
+
+.testimonial-slider__dots { display: flex; gap: 0.5rem; }
+.testimonial-slider__dots button {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--mint-200);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.testimonial-slider__dots button[aria-selected="true"] {
+  background: var(--gold-500);
+  transform: scale(1.3);
+}
+
+/* ----------------------------------------------------------------
+   18. FAQ ACCORDION
+   ---------------------------------------------------------------- */
+.faq__container { max-width: 820px; }
+.accordion__item {
+  border-bottom: 1px solid var(--border-soft);
+}
+.accordion__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 0;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--teal-900);
+}
+.accordion__icon { color: var(--gold-500); transition: transform var(--transition-fast); flex-shrink: 0; }
+.accordion__trigger[aria-expanded="true"] .accordion__icon { transform: rotate(45deg); }
+
+.accordion__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-med);
+}
+.accordion__panel-inner {
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  padding-right: 2rem;
+}
+.accordion__item:has(.accordion__trigger[aria-expanded="true"]) .accordion__panel {
+  grid-template-rows: 1fr;
+}
+.accordion__panel > .accordion__panel-inner { min-height: 0; }
+.accordion__item:has(.accordion__trigger[aria-expanded="true"]) .accordion__panel-inner {
+  padding-bottom: 1.4rem;
+}
+
+/* Fallback grid wrapper needs a min-height:0 child */
+.accordion__panel { overflow: hidden; }
+
+/* ----------------------------------------------------------------
+   19. EMERGENCY CTA
+   ---------------------------------------------------------------- */
+.emergency-cta {
+  background: var(--teal-900);
+  background-image: radial-gradient(circle at 15% 20%, rgba(var(--gold-500-rgb), 0.15), transparent 45%);
+  color: var(--paper);
+  padding-block: clamp(2.8rem, 4vw, 3.6rem);
+}
+.emergency-cta__container {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+}
+.emergency-cta__icon {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: rgba(251,250,247,0.1);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.emergency-cta__text { flex: 1 1 320px; }
+.emergency-cta__text h2 { color: var(--paper); font-size: 1.6rem; margin-bottom: 0.4rem; }
+.emergency-cta__text p { color: rgba(251,250,247,0.75); max-width: 520px; }
+
+/* ----------------------------------------------------------------
+   20. LOCATION
+   ---------------------------------------------------------------- */
+.location__container {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: stretch;
+}
+.location__details { display: flex; flex-direction: column; gap: 1.3rem; margin: 1.6rem 0 2rem; }
+.location__details li { display: flex; gap: 1rem; align-items: flex-start; }
+.location__details-label { font-weight: 700; color: var(--teal-900); font-size: 0.85rem; }
+.location__details p a:hover { text-decoration: underline; }
+
+.location__map {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  min-height: 340px;
+}
+.location__map iframe { width: 100%; height: 100%; border: 0; min-height: 340px; }
+
+/* ----------------------------------------------------------------
+   21. APPOINTMENT FORM
+   ---------------------------------------------------------------- */
+.appointment__container {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: start;
+}
+.appointment__points { margin-top: 1.6rem; display: flex; flex-direction: column; gap: 0.7rem; color: var(--teal-700); font-weight: 600; font-size: 0.92rem; }
+
+.appointment__form {
+  background: var(--mint-100);
+  border: 1px solid var(--mint-200);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.6rem, 3vw, 2.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.form-field { display: flex; flex-direction: column; gap: 0.45rem; }
+.form-field label { font-size: 0.85rem; font-weight: 700; color: var(--teal-900); }
+.form-field input,
+.form-field select,
+.form-field textarea {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  font-size: 0.94rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 3px rgba(var(--teal-600-rgb), 0.15);
+  outline: none;
+}
+.form-field textarea { resize: vertical; min-height: 100px; }
+
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea {
+  border-color: #C0503F;
+}
+.form-field__error {
+  font-size: 0.78rem;
+  color: #C0503F;
+  min-height: 1em;
+}
+
+.form-submit { align-self: flex-start; margin-top: 0.4rem; }
+.appointment__form-note {
+  font-size: 0.88rem;
+  color: var(--teal-700);
+  font-weight: 600;
+  min-height: 1.2em;
+}
+
+/* ----------------------------------------------------------------
+   21b. LIVE TOKEN DISPLAY
+   ---------------------------------------------------------------- */
+.live-token { background: var(--teal-900); padding-block: clamp(2.4rem, 4vw, 3.2rem); }
+.live-token__container { text-align: center; }
+.live-token__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.live-token__card {
+  background: rgba(251, 250, 247, 0.06);
+  border: 1px solid rgba(251, 250, 247, 0.14);
+  border-radius: var(--radius-md);
+  padding: 1.4rem 1rem;
+}
+.live-token__card--serving {
+  background: rgba(var(--gold-500-rgb), 0.14);
+  border-color: rgba(var(--gold-500-rgb), 0.4);
+}
+.live-token__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(251, 250, 247, 0.65);
+  margin-bottom: 0.5rem;
+}
+.live-token__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 600;
+  color: var(--paper);
+  letter-spacing: 0.02em;
+}
+.live-token__card--serving .live-token__value { color: var(--gold-500); }
+.live-token__sub { font-size: 0.75rem; color: rgba(251, 250, 247, 0.6); margin-top: 0.1rem; }
+.live-token__status {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: rgba(251, 250, 247, 0.55);
+  min-height: 1.2em;
+}
+
+/* ----------------------------------------------------------------
+   21c. TOKEN STATUS TRACKER
+   ---------------------------------------------------------------- */
+.token-tracker__container { max-width: 640px; text-align: center; }
+.token-tracker__form {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.token-tracker__form input {
+  flex: 1;
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  padding: 0.85rem 1.3rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.token-tracker__form input:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 3px rgba(var(--teal-600-rgb), 0.15);
+  outline: none;
+}
+.token-tracker__status {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--teal-700);
+  min-height: 1.2em;
+}
+
+.token-result {
+  margin-top: 1.6rem;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid var(--mint-200);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem clamp(1.2rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+.token-result__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--mint-200);
+}
+.token-result__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-600);
+}
+.token-result__token {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--teal-900);
+}
+.token-result__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.4rem;
+  margin: 0;
+}
+.token-result__grid dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.2rem;
+}
+.token-result__grid dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--teal-900);
+}
+
+/* Status badge — shared between the tracker result and admin panel */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--mint-200);
+  color: var(--teal-900);
+}
+.status-badge[data-status="Appointment Confirmed"] { background: var(--mint-200); color: var(--teal-700); }
+.status-badge[data-status="Waiting"] { background: var(--gold-100); color: #8a6a3d; }
+.status-badge[data-status="Patient Called"] { background: #DCEAF7; color: #2A5B8A; }
+.status-badge[data-status="In Consultation"] { background: var(--teal-900); color: var(--paper); }
+.status-badge[data-status="Treatment Started"] { background: var(--gold-500); color: var(--teal-900); }
+.status-badge[data-status="Completed"] { background: rgba(47,122,77,0.14); color: var(--success-600); }
+.status-badge[data-status="Cancelled"] { background: rgba(192,80,63,0.12); color: var(--rust-500); }
+
+/* Token success card shown after booking */
+.token-success {
+  margin-top: 1.4rem;
+  text-align: center;
+  background: var(--paper);
+  border: 1.5px dashed var(--gold-500);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+}
+.token-success__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-600);
+  margin-bottom: 0.3rem;
+}
+.token-success__value {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--teal-900);
+}
+.token-success__hint {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.4rem;
+}
+
+/* ----------------------------------------------------------------
+   22. FOOTER
+   ---------------------------------------------------------------- */
+.site-footer {
+  background: var(--teal-900);
+  color: rgba(251,250,247,0.8);
+  padding-top: clamp(3rem, 5vw, 4.5rem);
+}
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.8fr 1.1fr;
+  gap: 2.5rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(251,250,247,0.12);
+}
+.navbar__logo--footer { margin-bottom: 1rem; }
+.navbar__logo-text--footer { color: var(--paper); }
+.site-footer__tagline { font-size: 0.92rem; margin-bottom: 1.3rem; }
+.site-footer__social { display: flex; gap: 0.7rem; }
+.site-footer__social a {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(251,250,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.site-footer__social a:hover { background: rgba(251,250,247,0.1); border-color: var(--gold-500); }
+
+.site-footer__links h3,
+.site-footer__newsletter h3 {
+  font-family: var(--font-body);
+  color: var(--paper);
+  font-size: 0.95rem;
+  margin-bottom: 1.1rem;
+}
+.site-footer__links ul { display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.9rem; }
+.site-footer__links a:hover { color: var(--gold-500); }
+
+.site-footer__newsletter p { font-size: 0.88rem; margin-bottom: 1rem; }
+.newsletter-form { display: flex; gap: 0.5rem; }
+.newsletter-form input {
+  flex: 1;
+  background: rgba(251,250,247,0.08);
+  border: 1px solid rgba(251,250,247,0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  color: var(--paper);
+  font-size: 0.88rem;
+}
+.newsletter-form input::placeholder { color: rgba(251,250,247,0.45); }
+.newsletter-form button {
+  width: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--gold-500);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition-fast);
+}
+.newsletter-form button:hover { background: #a67d49; }
+.newsletter-form__status { font-size: 0.8rem; margin-top: 0.6rem; color: var(--gold-500); min-height: 1em; }
+
+.site-footer__bottom { padding-block: 1.5rem; }
+.site-footer__bottom-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.82rem;
+}
+.site-footer__legal { display: flex; gap: 1.5rem; }
+.site-footer__legal a:hover { color: var(--gold-500); }
+
+/* ----------------------------------------------------------------
+   23. BACK TO TOP
+   ---------------------------------------------------------------- */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--teal-900);
+  color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md);
+  z-index: 500;
+  transition: transform var(--transition-fast), opacity var(--transition-fast), background var(--transition-fast);
+}
+.back-to-top:hover { background: var(--teal-700); transform: translateY(-3px); }
+.back-to-top[hidden] { display: none; }
+
+/* ----------------------------------------------------------------
+   24. ANIMATIONS
+   ---------------------------------------------------------------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal-group] > * { transition-delay: calc(var(--reveal-index, 0) * 90ms); }
+
+/* ----------------------------------------------------------------
+   25. RESPONSIVE BREAKPOINTS
+   ---------------------------------------------------------------- */
+
+/* ≤1024px — tablets */
+@media (max-width: 1024px) {
+  .hero__container { grid-template-columns: 1fr; }
+  .hero__media { max-width: 520px; margin: 0 auto; order: -1; }
+  .hero__content { text-align: center; }
+  .hero__cta-row, .hero__rating { justify-content: center; }
+  .hero__subtext { margin-inline: auto; }
+
+  .why-us__container,
+  .doctor__container,
+  .location__container,
+  .appointment__container { grid-template-columns: 1fr; }
+  .doctor__container { text-align: left; }
+  .doctor__media { max-width: 420px; margin: 0 auto 2rem; }
+
+  .services__grid { grid-template-columns: repeat(2, 1fr); }
+  .stats__grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline { grid-template-columns: repeat(3, 1fr); }
+  .timeline::before { display: none; }
+  .gallery__grid { grid-template-columns: repeat(3, 1fr); }
+
+  .site-footer__grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ≤768px — large phones / small tablets */
+@media (max-width: 768px) {
+  html { scroll-padding-top: 90px; }
+
+  .navbar { margin-top: 0.5rem; border-radius: var(--radius-md); align-items: flex-start; flex-wrap: wrap; }
+  .navbar__toggle { display: flex; order: 3; }
+  .navbar__actions { order: 2; margin-left: auto; }
+  .navbar__phone span { display: none; }
+  .navbar__links {
+    order: 4;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-med);
   }
+  .navbar__links.is-open { max-height: 480px; padding-top: 0.75rem; }
+  .navbar__links li { width: 100%; padding-block: 0.6rem; border-top: 1px solid var(--border-soft); }
 
-  /* ----------------------------------------------------------------
-     2. SUPABASE CONFIG & CLIENT
-     ----------------------------------------------------------------
-     Public site uses ONLY the Supabase project URL + anon/publishable
-     key — never the service_role key. Every call below goes through
-     the two narrow, validated RPC functions approved for public use
-     (create_public_appointment, get_appointment_status). The public
-     site never queries the `appointments` table directly, and has no
-     Google Apps Script / Google Sheets dependency from here on.
-     ---------------------------------------------------------------- */
-  const SUPABASE_URL = "https://xpffspawsuihjoetvvon.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_c7GcZSkIpCa5dfw_eexoEw_uE31bPsY";
+  .hero__floating-card { position: static; margin-top: 1rem; max-width: none; animation: none; }
+  .hero__floating-card--bottom { margin-bottom: 0; }
 
-  // reCAPTCHA v3 site key — this one is meant to be public (unlike
-  // the secret key, which lives only in the book-appointment Edge
-  // Function's server-side environment and never appears here).
-  const RECAPTCHA_SITE_KEY = "6LctjqEtAAAAAEdNr8IHCSGnIFcB8qFg6XbkvHsX";
+  .services__grid { grid-template-columns: 1fr; }
+  .stats__grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .timeline { grid-template-columns: 1fr; }
+  .gallery__grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 170px; }
 
-  function isSupabaseConfigured() {
-    return (
-      typeof SUPABASE_URL === "string" &&
-      SUPABASE_URL.startsWith("http") &&
-      !SUPABASE_URL.includes("PASTE_") &&
-      typeof SUPABASE_ANON_KEY === "string" &&
-      SUPABASE_ANON_KEY.length > 20 &&
-      !SUPABASE_ANON_KEY.includes("PASTE_") &&
-      typeof window.supabase !== "undefined"
-    );
+  .location__container { gap: 2rem; }
+  .form-row { grid-template-columns: 1fr; }
+
+  .live-token__grid { gap: 0.8rem; }
+  .token-result__grid { grid-template-columns: 1fr; }
+
+  .site-footer__grid { grid-template-columns: 1fr; gap: 2.2rem; }
+  .site-footer__bottom-inner { flex-direction: column; text-align: center; }
+
+  .emergency-cta__container { text-align: center; justify-content: center; }
+  .emergency-cta__text { flex-basis: 100%; }
+}
+
+/* ≤425px — phones */
+@media (max-width: 425px) {
+  .section-container { padding-inline: 1.1rem; }
+  .hero__cta-row { flex-direction: column; align-items: stretch; }
+  .hero__cta-row .btn { width: 100%; }
+  .stats__grid { grid-template-columns: 1fr 1fr; }
+  .gallery__grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 150px; }
+  .doctor__media-badge { width: 92px; height: 92px; right: -0.6rem; bottom: -0.6rem; }
+  .trust-badges__list { gap: 0.6rem 1.4rem; font-size: 0.92rem; }
+  .back-to-top { right: 1rem; bottom: 1rem; width: 42px; height: 42px; }
+
+  .token-tracker__form { flex-direction: column; }
+  .token-tracker__form .btn { width: 100%; }
+  .live-token__grid { grid-template-columns: 1fr; }
+}
+
+/* ≤375px — small phones */
+@media (max-width: 375px) {
+  .hero__heading { font-size: 2.2rem; }
+  .section-heading__title { font-size: 1.7rem; }
+  .btn--large { padding: 0.95rem 1.6rem; }
+}
+
+/* ≤320px — smallest supported phones */
+@media (max-width: 320px) {
+  .navbar__logo-text { font-size: 1rem; }
+  .gallery__grid { grid-template-columns: 1fr; grid-auto-rows: 220px; }
+  .stats__grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .stat-card { padding: 1.5rem 0.6rem; }
+}
+
+/* ----------------------------------------------------------------
+   26. REDUCED MOTION
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-
-  function isBookingReady() {
-    return (
-      isSupabaseConfigured() &&
-      typeof RECAPTCHA_SITE_KEY === "string" &&
-      RECAPTCHA_SITE_KEY.length > 10 &&
-      !RECAPTCHA_SITE_KEY.includes("PASTE_")
-    );
-  }
-
-  // Loaded once, lazily, only if booking is actually configured —
-  // avoids pulling in Google's script or making any request for
-  // visitors who only use the marketing site.
-  let _recaptchaLoading = null;
-  function loadRecaptcha() {
-    if (_recaptchaLoading) return _recaptchaLoading;
-    _recaptchaLoading = new Promise((resolve, reject) => {
-      if (window.grecaptcha) return resolve();
-      const script = document.createElement("script");
-      script.src = "https://www.google.com/recaptcha/api.js?render=" + RECAPTCHA_SITE_KEY;
-      script.onload = () => window.grecaptcha.ready(resolve);
-      script.onerror = () => reject(new Error("reCAPTCHA failed to load"));
-      document.head.appendChild(script);
-    });
-    return _recaptchaLoading;
-  }
-
-  async function getRecaptchaToken(action) {
-    await loadRecaptcha();
-    return window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action });
-  }
-
-  // Created lazily so a missing/placeholder config (or the CDN script
-  // failing to load) never throws before isSupabaseConfigured() has a
-  // chance to show a clear message instead of a broken page.
-  let _sb = null;
-  function sb() {
-    if (!_sb) _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    return _sb;
-  }
-
-  /* ----------------------------------------------------------------
-     3. ANNOUNCEMENT BAR — seamless looping marquee
-     ---------------------------------------------------------------- */
-  function initAnnouncementBar() {
-    const track = $(".announcement-bar__track");
-    if (!track) return;
-    // Duplicate the content once so the CSS translateX(-50%) loop is seamless
-    track.innerHTML += track.innerHTML;
-  }
-
-  /* ----------------------------------------------------------------
-     4. NAVBAR — scroll shadow state + mobile menu toggle
-     ---------------------------------------------------------------- */
-  function initNavbar() {
-    const header = $("#site-header");
-    const toggle = $("#navbar-toggle");
-    const links = $("#navbar-links");
-    if (!header) return;
-
-    const onScroll = rafThrottle(() => {
-      header.classList.toggle("is-scrolled", window.scrollY > 12);
-    });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-
-    if (toggle && links) {
-      toggle.addEventListener("click", () => {
-        const isOpen = toggle.getAttribute("aria-expanded") === "true";
-        toggle.setAttribute("aria-expanded", String(!isOpen));
-        links.classList.toggle("is-open", !isOpen);
-      });
-
-      // Close mobile menu when a link is clicked
-      $$("a", links).forEach((link) => {
-        link.addEventListener("click", () => {
-          toggle.setAttribute("aria-expanded", "false");
-          links.classList.remove("is-open");
-        });
-      });
-
-      // Close on Escape
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && links.classList.contains("is-open")) {
-          toggle.setAttribute("aria-expanded", "false");
-          links.classList.remove("is-open");
-          toggle.focus();
-        }
-      });
-    }
-  }
-
-  /* ----------------------------------------------------------------
-     5. SCROLL REVEAL ANIMATIONS
-     ---------------------------------------------------------------- */
-  function initScrollReveal() {
-    // Mark elements to reveal
-    const revealTargets = $$(
-      ".service-card, .why-us__item, .timeline__step, .stat-card, " +
-        ".gallery__item, .doctor__media, .doctor__content > *, " +
-        ".section-heading, .ba-slider"
-    );
-    revealTargets.forEach((el) => el.setAttribute("data-reveal", ""));
-
-    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-      revealTargets.forEach((el) => el.classList.add("is-visible"));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      // A generous negative-free bottom margin means elements start
-      // revealing well before they reach the bottom of the viewport, so
-      // they ease in gradually while you scroll instead of all firing at
-      // once the moment you stop.
-      { threshold: 0, rootMargin: "0px 0px 15% 0px" }
-    );
-
-    revealTargets.forEach((el) => observer.observe(el));
-
-    // Safety net: some embedded WebViews (e.g. in-app code-editor previews)
-    // throttle or misfire IntersectionObserver callbacks when the view loses
-    // focus. If anything is still hidden after 2.5s, reveal it directly so
-    // content can never get stuck invisible.
-    setTimeout(() => {
-      revealTargets.forEach((el) => {
-        if (!el.classList.contains("is-visible")) {
-          el.classList.add("is-visible");
-          observer.unobserve(el);
-        }
-      });
-    }, 2500);
-  }
-
-  /* ----------------------------------------------------------------
-     6. STATS COUNTER ANIMATION
-     ---------------------------------------------------------------- */
-  function initStatsCounter() {
-    const counters = $$("[data-count-to]");
-    if (!counters.length) return;
-
-    function animateCounter(el) {
-      const target = parseInt(el.getAttribute("data-count-to"), 10) || 0;
-      const suffix = el.getAttribute("data-suffix") || "";
-
-      if (prefersReducedMotion) {
-        el.textContent = target.toLocaleString() + suffix;
-        return;
-      }
-
-      const duration = 1800;
-      const start = performance.now();
-
-      function tick(now) {
-        const progress = clamp((now - start) / duration, 0, 1);
-        // ease-out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const value = Math.round(target * eased);
-        el.textContent = value.toLocaleString() + suffix;
-        if (progress < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      counters.forEach(animateCounter);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            animateCounter(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.6 }
-    );
-    counters.forEach((el) => observer.observe(el));
-  }
-
-  /* ----------------------------------------------------------------
-     7. BEFORE & AFTER COMPARISON SLIDER
-     ---------------------------------------------------------------- */
-  function initBeforeAfterSlider() {
-    const slider = $("[data-ba-slider]");
-    if (!slider) return;
-
-    const input = $("[data-ba-input]", slider);
-    const afterWrap = $("[data-ba-after]", slider);
-    const handle = $("[data-ba-handle]", slider);
-
-    function setPosition(percent) {
-      const clamped = clamp(percent, 0, 100);
-      afterWrap.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
-      handle.style.left = clamped + "%";
-      input.value = clamped;
-    }
-
-    // Range input drives it (covers keyboard, mouse drag, and touch natively)
-    input.addEventListener("input", () => setPosition(Number(input.value)));
-
-    // Also allow dragging directly on the slider area for a more natural feel
-    let isDragging = false;
-
-    function percentFromClientX(clientX) {
-      const rect = slider.getBoundingClientRect();
-      const x = clamp(clientX - rect.left, 0, rect.width);
-      return (x / rect.width) * 100;
-    }
-
-    function onPointerMove(e) {
-      if (!isDragging) return;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      setPosition(percentFromClientX(clientX));
-    }
-
-    function startDrag(e) {
-      isDragging = true;
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      setPosition(percentFromClientX(clientX));
-    }
-
-    function endDrag() {
-      isDragging = false;
-    }
-
-    slider.addEventListener("mousedown", startDrag);
-    slider.addEventListener("touchstart", startDrag, { passive: true });
-    window.addEventListener("mousemove", onPointerMove);
-    window.addEventListener("touchmove", onPointerMove, { passive: true });
-    window.addEventListener("mouseup", endDrag);
-    window.addEventListener("touchend", endDrag);
-
-    setPosition(50);
-  }
-
-  /* ----------------------------------------------------------------
-     8. SMILE GALLERY LIGHTBOX
-     ---------------------------------------------------------------- */
-  function initGalleryLightbox() {
-    const triggers = $$("[data-gallery-trigger]");
-    const lightbox = $("#lightbox");
-    const lightboxImage = $("#lightbox-image");
-    const closeBtn = $("#lightbox-close");
-    if (!triggers.length || !lightbox || !lightboxImage) return;
-
-    let lastFocusedElement = null;
-
-    function openLightbox(trigger) {
-      const fullSrc = trigger.getAttribute("data-full");
-      const imgAlt = $("img", trigger)?.getAttribute("alt") || "Smile gallery image";
-      lightboxImage.src = fullSrc;
-      lightboxImage.alt = imgAlt;
-      lightbox.hidden = false;
-      lastFocusedElement = document.activeElement;
-      closeBtn.focus();
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeLightbox() {
-      lightbox.hidden = true;
-      lightboxImage.src = "";
-      document.body.style.overflow = "";
-      if (lastFocusedElement) lastFocusedElement.focus();
-    }
-
-    triggers.forEach((trigger) => {
-      trigger.addEventListener("click", () => openLightbox(trigger));
-    });
-
-    closeBtn.addEventListener("click", closeLightbox);
-
-    lightbox.addEventListener("click", (e) => {
-      if (e.target === lightbox) closeLightbox();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     9. TESTIMONIALS SLIDER — auto + manual + dots + swipe
-     ---------------------------------------------------------------- */
-  function initTestimonialSlider() {
-    const root = $("[data-testimonial-slider]");
-    if (!root) return;
-
-    const track = $("[data-testimonial-track]", root);
-    const slides = $$(".testimonial-card", track);
-    const prevBtn = $("[data-testimonial-prev]", root);
-    const nextBtn = $("[data-testimonial-next]", root);
-    const dotsContainer = $("[data-testimonial-dots]", root);
-    if (!slides.length) return;
-
-    let currentIndex = 0;
-    let autoplayTimer = null;
-    const AUTOPLAY_DELAY = 6000;
-
-    // Build dots
-    slides.forEach((_, i) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.setAttribute("role", "tab");
-      dot.setAttribute("aria-label", `Go to testimonial ${i + 1}`);
-      dot.setAttribute("aria-selected", i === 0 ? "true" : "false");
-      dot.addEventListener("click", () => goTo(i, true));
-      dotsContainer.appendChild(dot);
-    });
-    const dots = $$("button", dotsContainer);
-
-    function render() {
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      dots.forEach((dot, i) =>
-        dot.setAttribute("aria-selected", i === currentIndex ? "true" : "false")
-      );
-    }
-
-    function goTo(index, userInitiated) {
-      currentIndex = (index + slides.length) % slides.length;
-      render();
-      if (userInitiated) restartAutoplay();
-    }
-
-    function next() {
-      goTo(currentIndex + 1);
-    }
-    function prev() {
-      goTo(currentIndex - 1);
-    }
-
-    function startAutoplay() {
-      if (prefersReducedMotion) return;
-      stopAutoplay();
-      autoplayTimer = setInterval(next, AUTOPLAY_DELAY);
-    }
-    function stopAutoplay() {
-      if (autoplayTimer) clearInterval(autoplayTimer);
-    }
-    function restartAutoplay() {
-      stopAutoplay();
-      startAutoplay();
-    }
-
-    nextBtn?.addEventListener("click", () => goTo(currentIndex + 1, true));
-    prevBtn?.addEventListener("click", () => goTo(currentIndex - 1, true));
-
-    // Pause on hover / focus
-    root.addEventListener("mouseenter", stopAutoplay);
-    root.addEventListener("mouseleave", startAutoplay);
-    root.addEventListener("focusin", stopAutoplay);
-    root.addEventListener("focusout", startAutoplay);
-
-    // Touch swipe support
-    let touchStartX = 0;
-    let touchDeltaX = 0;
-
-    track.addEventListener(
-      "touchstart",
-      (e) => {
-        touchStartX = e.touches[0].clientX;
-        stopAutoplay();
-      },
-      { passive: true }
-    );
-    track.addEventListener(
-      "touchmove",
-      (e) => {
-        touchDeltaX = e.touches[0].clientX - touchStartX;
-      },
-      { passive: true }
-    );
-    track.addEventListener("touchend", () => {
-      if (Math.abs(touchDeltaX) > 50) {
-        touchDeltaX < 0 ? goTo(currentIndex + 1) : goTo(currentIndex - 1);
-      }
-      touchDeltaX = 0;
-      startAutoplay();
-    });
-
-    render();
-    startAutoplay();
-  }
-
-  /* ----------------------------------------------------------------
-     10. FAQ ACCORDION — accessible, one panel open at a time
-     ---------------------------------------------------------------- */
-  function initFaqAccordion() {
-    const accordion = $("[data-accordion]");
-    if (!accordion) return;
-
-    const triggers = $$(".accordion__trigger", accordion);
-
-    triggers.forEach((trigger) => {
-      trigger.addEventListener("click", () => {
-        const isOpen = trigger.getAttribute("aria-expanded") === "true";
-
-        // Close all panels first (only one open at a time)
-        triggers.forEach((t) => t.setAttribute("aria-expanded", "false"));
-
-        // Re-open the clicked one if it was previously closed
-        trigger.setAttribute("aria-expanded", String(!isOpen));
-      });
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     11. APPOINTMENT BOOKING FORM — validates, calls the
-     create_public_appointment Supabase RPC, and displays the
-     returned token number. Every field name/id here is unchanged
-     from before; only the backend call changed.
-     ---------------------------------------------------------------- */
-  function initAppointmentForm() {
-    const form = $("#appointment-form");
-    if (!form) return;
-
-    const statusEl = $("[data-form-status]", form);
-    const submitBtn = $("#appointment-submit", form);
-    const submitBtnLabel = submitBtn ? submitBtn.innerHTML : "";
-    const tokenCard = $("#token-success");
-    const tokenValueEl = $("[data-token-value]", tokenCard || document);
-
-    const validators = {
-      patientName: (value) =>
-        value.trim().length >= 2 || "Please enter the patient's name.",
-      mobile: (value) =>
-        /^[0-9+()\-.\s]{7,15}$/.test(value.trim()) || "Please enter a valid mobile number.",
-      age: (value) => {
-        const n = Number(value);
-        return (Number.isInteger(n) && n > 0 && n <= 120) || "Please enter a valid age.";
-      },
-      gender: (value) => value !== "" || "Please select a gender.",
-      treatment: (value) => value !== "" || "Please select a treatment.",
-      preferredDate: (value) => {
-        if (value === "") return "Please choose a preferred date.";
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const chosen = new Date(value + "T00:00:00");
-        return chosen >= today || "Please choose today or a future date.";
-      },
-      preferredTime: (value) => value !== "" || "Please select a preferred time.",
-    };
-
-    function showError(field, message) {
-      const wrapper = field.closest(".form-field");
-      const errorEl = $(`[data-error-for="${field.name}"]`, form);
-      if (wrapper) wrapper.classList.add("has-error");
-      if (errorEl) errorEl.textContent = message;
-    }
-
-    function clearError(field) {
-      const wrapper = field.closest(".form-field");
-      const errorEl = $(`[data-error-for="${field.name}"]`, form);
-      if (wrapper) wrapper.classList.remove("has-error");
-      if (errorEl) errorEl.textContent = "";
-    }
-
-    function validateField(field) {
-      const validate = validators[field.name];
-      if (!validate) return true;
-      const result = validate(field.value);
-      if (result === true) {
-        clearError(field);
-        return true;
-      }
-      showError(field, result);
-      return false;
-    }
-
-    // Live validation on blur
-    Object.keys(validators).forEach((name) => {
-      const field = form.elements[name];
-      if (field) field.addEventListener("blur", () => validateField(field));
-    });
-
-    function setStatus(message, tone) {
-      statusEl.textContent = message;
-      statusEl.style.color =
-        tone === "error" ? "var(--rust-500)" : tone === "success" ? "var(--success-600)" : "";
-    }
-
-    function setLoading(isLoading) {
-      if (!submitBtn) return;
-      submitBtn.disabled = isLoading;
-      submitBtn.innerHTML = isLoading ? "Booking…" : submitBtnLabel;
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (tokenCard) tokenCard.hidden = true;
-
-      // Client-side only: guards against an accidental double-tap on
-      // mobile, nothing more. This is never the real protection —
-      // the Edge Function's server-side rate limit (per phone + per
-      // IP) is what actually stops repeated/abusive submissions, and
-      // it can't be bypassed by clearing this.
-      const lastSubmitAt = Number(sessionStorage.getItem("lastBookingSubmitAt") || 0);
-      if (Date.now() - lastSubmitAt < 5000) {
-        setStatus("Please wait a moment before submitting again.", "error");
-        return;
-      }
-
-      let isValid = true;
-      Object.keys(validators).forEach((name) => {
-        const field = form.elements[name];
-        if (field && !validateField(field)) isValid = false;
-      });
-
-      if (!isValid) {
-        setStatus("Please fix the highlighted fields and try again.", "error");
-        $(".has-error input, .has-error select", form)?.focus();
-        return;
-      }
-
-      if (!isBookingReady()) {
-        setStatus(
-          "Booking system isn't connected yet — see the setup guide to finish configuration.",
-          "error"
-        );
-        return;
-      }
-
-      setLoading(true);
-      setStatus("Booking your appointment…");
-      sessionStorage.setItem("lastBookingSubmitAt", String(Date.now()));
-
-      try {
-        const recaptchaToken = await getRecaptchaToken("book_appointment");
-
-        const response = await fetch(SUPABASE_URL + "/functions/v1/book-appointment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + SUPABASE_ANON_KEY,
-            apikey: SUPABASE_ANON_KEY,
-          },
-          body: JSON.stringify({
-            patientName: form.elements.patientName.value.trim(),
-            phone: form.elements.mobile.value.trim(),
-            age: Number(form.elements.age.value),
-            gender: form.elements.gender.value,
-            treatment: form.elements.treatment.value,
-            appointmentDate: form.elements.preferredDate.value,
-            appointmentTime: form.elements.preferredTime.value,
-            notes: form.elements.notes.value.trim(),
-            website: form.elements.website ? form.elements.website.value : "", // honeypot — server decides, this just relays it
-            recaptchaToken,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (result && result.success && result.token) {
-          setStatus(
-            "Appointment booked! Your token number is shown below — save it to track your status.",
-            "success"
-          );
-          if (tokenCard && tokenValueEl) {
-            tokenValueEl.textContent = result.token;
-            tokenCard.hidden = false;
-            tokenCard.scrollIntoView({
-              behavior: prefersReducedMotion ? "auto" : "smooth",
-              block: "center",
-            });
-          }
-          form.reset();
-        } else {
-          setStatus(
-            (result && result.message) || "Something went wrong. Please try again.",
-            "error"
-          );
-        }
-      } catch (err) {
-        setStatus(
-          "Couldn't reach the booking system — please check your internet connection and try again.",
-          "error"
-        );
-      } finally {
-        setLoading(false);
-      }
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     12. LIVE TOKEN DISPLAY — polls the get_live_queue_status
-     Supabase RPC (Step 5) for today's aggregate queue state. No
-     patient PII is involved — see the SQL file's header comment.
-     ---------------------------------------------------------------- */
-  function initLiveTokenDisplay() {
-    const section = $("#live-token");
-    if (!section) return;
-
-    const servingEl = $("[data-live-serving]", section);
-    const nextEl = $("[data-live-next]", section);
-    const waitingEl = $("[data-live-waiting]", section);
-    const statusEl = $("[data-live-status]", section);
-
-    async function refresh() {
-      if (!isSupabaseConfigured()) {
-        statusEl.textContent = "Live queue will appear here once booking is connected.";
-        return;
-      }
-      try {
-        const { data, error } = await sb().rpc("get_live_queue_status");
-        const row = Array.isArray(data) && data[0] ? data[0] : null;
-
-        if (!error && row) {
-          servingEl.textContent = row.now_serving || "—";
-          nextEl.textContent = row.next_token || "—";
-          waitingEl.textContent = String(row.waiting_count ?? 0);
-          statusEl.textContent = "";
-        } else {
-          statusEl.textContent = "Queue unavailable right now.";
-        }
-      } catch (err) {
-        statusEl.textContent = "Couldn't load the live queue — retrying shortly.";
-      }
-    }
-
-    refresh();
-    // Poll periodically so the board stays current without a manual refresh
-    setInterval(refresh, 20000);
-  }
-
-  /* ----------------------------------------------------------------
-     13. TOKEN STATUS TRACKER — calls the get_appointment_status
-     Supabase RPC, which requires BOTH the token and the last 4
-     digits of the phone number used at booking (two-factor lookup,
-     so a guessed/leaked token alone can't pull someone else's data).
-     ---------------------------------------------------------------- */
-  function initTokenTracker() {
-    const form = $("#token-tracker-form");
-    const resultCard = $("#token-result");
-    if (!form || !resultCard) return;
-
-    const statusEl = $("[data-tracker-status]");
-    const tokenInput = $("#tokenInput", form);
-    const phoneLast4Input = $("#tokenPhoneLast4", form);
-
-    const fields = {
-      token: $("[data-result-token]", resultCard),
-      badge: $("[data-result-status-badge]", resultCard),
-      name: $("[data-result-name]", resultCard),
-      doctor: $("[data-result-doctor]", resultCard),
-      date: $("[data-result-date]", resultCard),
-      time: $("[data-result-time]", resultCard),
-      position: $("[data-result-position]", resultCard),
-      wait: $("[data-result-wait]", resultCard),
-    };
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const token = tokenInput.value.trim().toUpperCase();
-      const phoneLast4 = phoneLast4Input ? phoneLast4Input.value.trim() : "";
-      resultCard.hidden = true;
-
-      if (!token) {
-        statusEl.textContent = "Please enter your token number.";
-        return;
-      }
-      if (!/^[0-9]{4}$/.test(phoneLast4)) {
-        statusEl.textContent = "Please enter the last 4 digits of the phone number you booked with.";
-        return;
-      }
-      if (!isSupabaseConfigured()) {
-        statusEl.textContent = "Booking system isn't connected yet — see the setup guide to link Supabase.";
-        return;
-      }
-
-      statusEl.textContent = "Looking up your token…";
-
-      try {
-        const { data, error } = await sb().rpc("get_appointment_status", {
-          p_token: token,
-          p_phone_last4: phoneLast4,
-        });
-
-        const appt = Array.isArray(data) && data[0] ? data[0] : null;
-
-        if (!error && appt) {
-          statusEl.textContent = "";
-          fields.token.textContent = appt.token;
-          fields.badge.textContent = appt.status;
-          fields.badge.setAttribute("data-status", appt.status);
-          fields.name.textContent = appt.patient_name;
-          fields.doctor.textContent = appt.doctor_name;
-          fields.date.textContent = appt.appointment_date;
-          fields.time.textContent = appt.appointment_time;
-          fields.position.textContent =
-            appt.waiting_position > 0 ? `${appt.waiting_position} ahead of you` : "You're up next";
-          fields.wait.textContent =
-            appt.estimated_wait_minutes > 0 ? `~${appt.estimated_wait_minutes} min` : "Any moment now";
-          resultCard.hidden = false;
-        } else if (error) {
-          statusEl.textContent = "Something went wrong. Please try again.";
-        } else {
-          // Deliberately generic: the RPC returns an empty result both
-          // when the token doesn't exist and when the phone digits
-          // don't match, so this message never confirms which one.
-          statusEl.textContent = "No matching appointment found. Please check your token and phone number.";
-        }
-      } catch (err) {
-        statusEl.textContent = "Couldn't reach the booking system — please try again shortly.";
-      }
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     14. NEWSLETTER FORM (frontend only)
-     ---------------------------------------------------------------- */
-  function initNewsletterForm() {
-    const form = $("#newsletter-form");
-    if (!form) return;
-    const statusEl = $("[data-newsletter-status]", form);
-    const emailInput = $("#newsletter-email", form);
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-      if (!isValid) {
-        statusEl.textContent = "Please enter a valid email address.";
-        return;
-      }
-      statusEl.textContent = "You're subscribed — thank you!";
-      form.reset();
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     15. BACK TO TOP
-     ---------------------------------------------------------------- */
-  function initBackToTop() {
-    const button = $("#back-to-top");
-    if (!button) return;
-
-    const onScroll = rafThrottle(() => {
-      button.hidden = window.scrollY < 480;
-    });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-
-    button.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-      });
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     16. FOOTER CURRENT YEAR
-     ---------------------------------------------------------------- */
-  function initFooterYear() {
-    const el = $("#current-year");
-    if (el) el.textContent = new Date().getFullYear();
-  }
-
-  /* ----------------------------------------------------------------
-     17. PLACEHOLDER LINK GUARD
-     ----------------------------------------------------------------
-     Fixes the "sudden jump to top" bug: the footer's social icons
-     and legal links (Instagram/Facebook/LinkedIn, Privacy/Terms/
-     Accessibility) use a literal href="#" as a placeholder since
-     they don't have real destinations yet. Clicking a bare "#"
-     link navigates to the empty fragment, which browsers treat as
-     "scroll to top of page" — combined with this site's
-     scroll-behavior: smooth, that shows up as a jarring animated
-     jump from wherever the user was reading.
-     This is a single delegated listener rather than fixing each
-     link individually, so it also covers any placeholder link
-     added later. It deliberately does NOT affect real anchor
-     links like href="#services" or href="#appointment" — only an
-     exact empty "#".
-     ---------------------------------------------------------------- */
-  function initPlaceholderLinkGuard() {
-    document.addEventListener("click", (e) => {
-      const link = e.target.closest('a[href="#"]');
-      if (link) e.preventDefault();
-    });
-  }
-
-  /* ----------------------------------------------------------------
-     18. INIT — run everything once the DOM is ready
-     ---------------------------------------------------------------- */
-  function init() {
-    initAnnouncementBar();
-    initNavbar();
-    initScrollReveal();
-    initStatsCounter();
-    initBeforeAfterSlider();
-    initGalleryLightbox();
-    initTestimonialSlider();
-    initFaqAccordion();
-    initAppointmentForm();
-    initLiveTokenDisplay();
-    initTokenTracker();
-    initNewsletterForm();
-    initBackToTop();
-    initFooterYear();
-    initPlaceholderLinkGuard();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-})();
+  html { scroll-behavior: auto; }
+  [data-reveal] { opacity: 1; transform: none; }
+  .hero__floating-card { animation: none; }
+}
