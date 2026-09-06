@@ -156,15 +156,15 @@
 
       <div class="hero__media">
         <picture>
-          <source media="(max-width: 640px)" srcset="images/hero-doctor.jpg">
-          <img
-            src="https://placehold.co/900x1080/EAF4F1/0E3B36?text=Doctor+with+Patient+%E2%80%94+Replace+Image&font=raleway"
-            alt="Dr. Meera Anand smiling with a patient in the Aurelia Dental House treatment room"
-            class="hero__image"
-            width="900" height="1080"
-            loading="eager"
-            fetchpriority="high">
-        </picture>
+  <source media="(max-width: 640px)" srcset="images/hero-doctor.jpg">
+  <img
+    src="images/hero-doctor.jpg"
+    alt="Dr. Meera Anand smiling with a patient in the Aurelia Dental House treatment room"
+    class="hero__image"
+    width="900" height="1080"
+    loading="eager"
+    fetchpriority="high">
+</picture>
 
         <div class="hero__floating-card hero__floating-card--top" role="note">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.6 6.6L21 10l-5 4.4L17.4 21 12 17.3 6.6 21 8 14.4 3 10l6.4-1.4L12 2z" fill="#B8905A"/></svg>
@@ -176,10 +176,10 @@
 
         <div class="hero__floating-card hero__floating-card--bottom" role="note">
           <div class="hero__floating-avatars" aria-hidden="true">
-            <img src="https://placehold.co/48x48/DCECE7/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
-            <img src="https://placehold.co/48x48/EAF4F1/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
-            <img src="https://placehold.co/48x48/DCECE7/0E3B36?text=%F0%9F%99%82" alt="" width="48" height="48">
-          </div>
+  <img src="images/hero-avatar-1.jpg" alt="" width="48" height="48">
+  <img src="images/hero-avatar-2.jpg" alt="" width="48" height="48">
+  <img src="images/hero-avatar-3.jpg" alt="" width="48" height="48">
+</div>
           <div>
             <p class="hero__floating-card-title">12,400+ patients</p>
             <p class="hero__floating-card-sub">treated since 2011</p>
@@ -309,9 +309,9 @@
     <div class="section-container why-us__container">
       <div class="why-us__media">
         <img
-          src="https://placehold.co/760x600/DCECE7/0E3B36?text=Clinic+Interior+%E2%80%94+Replace+Image&font=raleway"
-          alt="A treatment suite at Aurelia Dental House with natural light and calming decor"
-          loading="lazy" width="760" height="600">
+  src="images/clinic-interior.jpg"
+  alt="A treatment suite at Aurelia Dental House with natural light and calming decor"
+  loading="lazy" width="760" height="600">
       </div>
 
       <div class="why-us__content">
@@ -359,9 +359,9 @@
     <div class="section-container doctor__container">
       <div class="doctor__media">
         <img
-          src="https://placehold.co/620x760/EAF4F1/0E3B36?text=Dr.+Meera+Anand+%E2%80%94+Replace+Image&font=raleway"
-          alt="Portrait of Dr. Meera Anand, DDS, Lead Dentist at Aurelia Dental House"
-          loading="lazy" width="620" height="760">
+  src="images/doctor-meera.jpg"
+  alt="Portrait of Dr. Meera Anand, DDS, Lead Dentist at Aurelia Dental House"
+  loading="lazy" width="620" height="760">
         <div class="doctor__media-badge">
           <p class="doctor__media-badge-number">14+</p>
           <p class="doctor__media-badge-label">Years of<br>Experience</p>
@@ -442,71 +442,229 @@
 
   <!-- ============================================================
        10. BEFORE & AFTER COMPARISON SLIDER
-       ============================================================ -->
-  <section class="before-after" aria-labelledby="before-after-heading">
-    <div class="section-container">
-      <div class="section-heading section-heading--center">
-        <p class="eyebrow">Real Results</p>
-        <h2 class="section-heading__title" id="before-after-heading">See the transformation</h2>
-        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
-        <p class="section-heading__sub">Drag the slider to compare — every image is an actual Aurelia patient, shared with permission.</p>
-      </div>
+       ==================================================
+<!-- ==========================================================
+     15. BEFORE & AFTER SLIDER
+     ========================================================== -->
+<section class="before-after" aria-labelledby="before-after-heading">
+  <div class="section-container">
 
-      <div class="ba-slider" data-ba-slider>
-        <div class="ba-slider__image-wrap ba-slider__image-wrap--before">
-          <img src="https://placehold.co/1000x700/DCECE7/0E3B36?text=BEFORE+%E2%80%94+Replace+Image&font=raleway" alt="Patient's smile before cosmetic treatment" draggable="false">
-          <span class="ba-slider__tag ba-slider__tag--before">Before</span>
-        </div>
-        <div class="ba-slider__image-wrap ba-slider__image-wrap--after" data-ba-after>
-          <img src="https://placehold.co/1000x700/EAF4F1/0E3B36?text=AFTER+%E2%80%94+Replace+Image&font=raleway" alt="Patient's smile after cosmetic treatment" draggable="false">
-          <span class="ba-slider__tag ba-slider__tag--after">After</span>
-        </div>
+    <div class="section-heading section-heading--center">
+      <p class="eyebrow">Real Results</p>
 
-        <input
-          type="range"
-          class="ba-slider__range"
-          min="0" max="100" value="50"
-          aria-label="Drag to compare before and after images"
-          data-ba-input>
-        <div class="ba-slider__handle" data-ba-handle aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="#0E3B36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-      </div>
+      <h2 class="section-heading__title" id="before-after-heading">
+        See the transformation
+      </h2>
+
+      <svg
+        class="section-heading__arc"
+        viewBox="0 0 160 24"
+        fill="none"
+        aria-hidden="true">
+        <path
+          d="M2 4c26 24 130 24 156 0"
+          stroke="#B8905A"
+          stroke-width="1.6"
+          stroke-linecap="round"/>
+      </svg>
+
+      <p class="section-heading__sub">
+        Drag the slider to compare — every image is an actual Aurelia patient, shared with permission.
+      </p>
     </div>
-  </section>
 
+    <!-- BEFORE / AFTER SLIDER -->
+    <div class="ba-slider" data-ba-slider>
+
+      <!-- BEFORE IMAGE -->
+      <div class="ba-slider__image-wrap ba-slider__image-wrap--before">
+        <img
+          src="images/before.jpg"
+          alt="Patient's smile before cosmetic treatment"
+          draggable="false">
+        <span class="ba-slider__tag ba-slider__tag--before">
+          Before
+        </span>
+      </div>
+
+      <!-- AFTER IMAGE -->
+      <div
+        class="ba-slider__image-wrap ba-slider__image-wrap--after"
+        data-ba-after>
+
+        <img
+          src="images/after.jpg"
+          alt="Patient's smile after cosmetic treatment"
+          draggable="false">
+
+        <span class="ba-slider__tag ba-slider__tag--after">
+          After
+        </span>
+      </div>
+
+      <!-- SLIDER CONTROL -->
+      <input
+        type="range"
+        class="ba-slider__range"
+        min="0"
+        max="100"
+        value="50"
+        aria-label="Drag to compare before and after images"
+        data-ba-input>
+
+      <!-- SLIDER HANDLE -->
+      <div
+        class="ba-slider__handle"
+        data-ba-handle
+        aria-hidden="true">
+
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none">
+
+          <path
+            d="M9 6l-6 6 6 6M15 6l6 6-6 6"
+            stroke="#0E3B36"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+        </svg>
+
+      </div>
+
+    </div>
+    <!-- END BEFORE / AFTER SLIDER -->
+
+  </div>
+</section>
   <!-- ============================================================
        11. SMILE GALLERY
        ============================================================ -->
-  <section class="gallery" id="gallery" aria-labelledby="gallery-heading">
-    <div class="section-container">
-      <div class="section-heading section-heading--center">
-        <p class="eyebrow">Smile Gallery</p>
-        <h2 class="section-heading__title" id="gallery-heading">Smiles crafted at Aurelia</h2>
-        <svg class="section-heading__arc" viewBox="0 0 160 24" fill="none" aria-hidden="true"><path d="M2 4c26 24 130 24 156 0" stroke="#B8905A" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </div>
+ <section class="gallery" id="gallery" aria-labelledby="gallery-heading">
+  <div class="section-container">
 
-      <div class="gallery__grid">
-        <button class="gallery__item gallery__item--tall" data-gallery-trigger data-full="https://placehold.co/900x1200/EAF4F1/0E3B36?text=Smile+01&font=raleway" aria-label="Open smile gallery image 1">
-          <img src="https://placehold.co/450x600/EAF4F1/0E3B36?text=Smile+01&font=raleway" alt="Cosmetic dentistry result, patient smile 1" loading="lazy" width="450" height="600">
-        </button>
-        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/DCECE7/0E3B36?text=Smile+02&font=raleway" aria-label="Open smile gallery image 2">
-          <img src="https://placehold.co/450x450/DCECE7/0E3B36?text=Smile+02&font=raleway" alt="Cosmetic dentistry result, patient smile 2" loading="lazy" width="450" height="450">
-        </button>
-        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/EAF4F1/0E3B36?text=Smile+03&font=raleway" aria-label="Open smile gallery image 3">
-          <img src="https://placehold.co/450x450/EAF4F1/0E3B36?text=Smile+03&font=raleway" alt="Cosmetic dentistry result, patient smile 3" loading="lazy" width="450" height="450">
-        </button>
-        <button class="gallery__item gallery__item--tall" data-gallery-trigger data-full="https://placehold.co/900x1200/DCECE7/0E3B36?text=Smile+04&font=raleway" aria-label="Open smile gallery image 4">
-          <img src="https://placehold.co/450x600/DCECE7/0E3B36?text=Smile+04&font=raleway" alt="Cosmetic dentistry result, patient smile 4" loading="lazy" width="450" height="600">
-        </button>
-        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/EAF4F1/0E3B36?text=Smile+05&font=raleway" aria-label="Open smile gallery image 5">
-          <img src="https://placehold.co/450x450/EAF4F1/0E3B36?text=Smile+05&font=raleway" alt="Cosmetic dentistry result, patient smile 5" loading="lazy" width="450" height="450">
-        </button>
-        <button class="gallery__item" data-gallery-trigger data-full="https://placehold.co/900x900/DCECE7/0E3B36?text=Smile+06&font=raleway" aria-label="Open smile gallery image 6">
-          <img src="https://placehold.co/450x450/DCECE7/0E3B36?text=Smile+06&font=raleway" alt="Cosmetic dentistry result, patient smile 6" loading="lazy" width="450" height="450">
-        </button>
-      </div>
+    <div class="section-heading section-heading--center">
+      <p class="eyebrow">Smile Gallery</p>
+
+      <h2 class="section-heading__title" id="gallery-heading">
+        Smiles crafted at Aurelia
+      </h2>
+
+      <svg
+        class="section-heading__arc"
+        viewBox="0 0 160 24"
+        fill="none"
+        aria-hidden="true">
+        <path
+          d="M2 4c26 24 130 24 156 0"
+          stroke="#B8905A"
+          stroke-width="1.6"
+          stroke-linecap="round"/>
+      </svg>
     </div>
+
+    <div class="gallery__grid">
+
+      <!-- SMILE 01 -->
+      <button
+        class="gallery__item gallery__item--tall"
+        data-gallery-trigger
+        data-full="images/smile-01.jpg"
+        aria-label="Open smile gallery image 1">
+
+        <img
+          src="images/smile-01.jpg"
+          alt="Cosmetic dentistry result, patient smile 1"
+          loading="lazy"
+          width="450"
+          height="600">
+      </button>
+
+
+      <!-- SMILE 02 -->
+      <button
+        class="gallery__item"
+        data-gallery-trigger
+        data-full="images/smile-02.jpg"
+        aria-label="Open smile gallery image 2">
+
+        <img
+          src="images/smile-02.jpg"
+          alt="Cosmetic dentistry result, patient smile 2"
+          loading="lazy"
+          width="450"
+          height="450">
+      </button>
+
+
+      <!-- SMILE 03 -->
+      <button
+        class="gallery__item"
+        data-gallery-trigger
+        data-full="images/smile-03.jpg"
+        aria-label="Open smile gallery image 3">
+
+        <img
+          src="images/smile-03.jpg"
+          alt="Cosmetic dentistry result, patient smile 3"
+          loading="lazy"
+          width="450"
+          height="450">
+      </button>
+
+
+      <!-- SMILE 04 -->
+      <button
+        class="gallery__item gallery__item--tall"
+        data-gallery-trigger
+        data-full="images/smile-04.jpg"
+        aria-label="Open smile gallery image 4">
+
+        <img
+          src="images/smile-04.jpg"
+          alt="Cosmetic dentistry result, patient smile 4"
+          loading="lazy"
+          width="450"
+          height="600">
+      </button>
+
+
+      <!-- SMILE 05 -->
+      <button
+        class="gallery__item"
+        data-gallery-trigger
+        data-full="images/smile-05.jpg"
+        aria-label="Open smile gallery image 5">
+
+        <img
+          src="images/smile-05.jpg"
+          alt="Cosmetic dentistry result, patient smile 5"
+          loading="lazy"
+          width="450"
+          height="450">
+      </button>
+
+
+      <!-- SMILE 06 -->
+      <button
+        class="gallery__item"
+        data-gallery-trigger
+        data-full="images/smile-06.jpg"
+        aria-label="Open smile gallery image 6">
+
+        <img
+          src="images/smile-06.jpg"
+          alt="Cosmetic dentistry result, patient smile 6"
+          loading="lazy"
+          width="450"
+          height="450">
+      </button>
+
+    </div>
+  </div>
+</section>
 
     <!-- Lightbox for gallery -->
     <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Smile gallery image viewer" hidden>
@@ -535,9 +693,13 @@
             <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
             <p class="testimonial-card__text">“I'd put off veneers for years out of fear. The team walked me through every step and the result looks completely natural. Best decision I've made for my confidence.”</p>
             <div class="testimonial-card__author">
-              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=JR" alt="" width="56" height="56">
+             <img
+  src="images/testimonial-01.jpg"
+  alt=""
+  width="56"
+  height="56">
               <div>
-                <p class="testimonial-card__name">Jordan R.</p>
+                <p class="testimonial-card__name">Rahul S.</p>
                 <p class="testimonial-card__meta">Cosmetic Veneers, 2025</p>
               </div>
             </div>
@@ -547,9 +709,13 @@
             <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
             <p class="testimonial-card__text">“My implant procedure was painless and the follow-up care was outstanding. Dr. Anand personally called to check on me the next day.”</p>
             <div class="testimonial-card__author">
-              <img src="https://placehold.co/56x56/DCECE7/0E3B36?text=PS" alt="" width="56" height="56">
+             <img
+  src="images/testimonial-02.jpg"
+  alt=""
+  width="56"
+  height="56">
               <div>
-                <p class="testimonial-card__name">Priya S.</p>
+                <p class="testimonial-card__name">Priya R.</p>
                 <p class="testimonial-card__meta">Dental Implant, 2024</p>
               </div>
             </div>
@@ -559,9 +725,13 @@
             <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
             <p class="testimonial-card__text">“My son used to cry at the dentist. Now he asks when his next cleaning is. The pediatric team is genuinely wonderful.”</p>
             <div class="testimonial-card__author">
-              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=MT" alt="" width="56" height="56">
+             <img
+  src="images/testimonial-03.jpg"
+  alt=""
+  width="56"
+  height="56">
               <div>
-                <p class="testimonial-card__name">Marcus T.</p>
+                <p class="testimonial-card__name">pooja .</p>
                 <p class="testimonial-card__meta">Pediatric Care, 2025</p>
               </div>
             </div>
@@ -571,7 +741,11 @@
             <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
             <p class="testimonial-card__text">“Eighteen months into Invisalign and the digital simulation they showed me on day one was almost exactly how my smile turned out.”</p>
             <div class="testimonial-card__author">
-              <img src="https://placehold.co/56x56/DCECE7/0E3B36?text=AK" alt="" width="56" height="56">
+              <img
+  src="images/testimonial-04.jpg"
+  alt=""
+  width="56"
+  height="56">
               <div>
                 <p class="testimonial-card__name">Aisha K.</p>
                 <p class="testimonial-card__meta">Invisalign, 2023–2024</p>
@@ -583,7 +757,11 @@
             <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
             <p class="testimonial-card__text">“Chipped a tooth on a Sunday and they saw me within two hours. Calm, professional, and it never felt like an emergency once I arrived.”</p>
             <div class="testimonial-card__author">
-              <img src="https://placehold.co/56x56/EAF4F1/0E3B36?text=DL" alt="" width="56" height="56">
+              <img
+  src="images/testimonial-05.jpg"
+  alt=""
+  width="56"
+  height="56">
               <div>
                 <p class="testimonial-card__name">David L.</p>
                 <p class="testimonial-card__meta">Emergency Care, 2025</p>
