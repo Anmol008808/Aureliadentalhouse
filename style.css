@@ -1595,3 +1595,17 @@ section { padding-block: var(--space-section); }
   [data-reveal] { opacity: 1; transform: none; }
   .hero__floating-card { animation: none; }
 }
+/* baaki tumhara CSS... */
+
+
+/* Mobile Track Button Fix */
+@media (max-width: 600px) {
+  .token-tracker__form {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .token-tracker__form .btn--primary {
+    margin: 10px auto 0;
+  }
+     }
