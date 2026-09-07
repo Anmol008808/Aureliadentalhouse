@@ -1609,3 +1609,22 @@ section { padding-block: var(--space-section); }
     margin: 10px auto 0;
   }
      }
+@media (max-width: 600px) {
+  .token-tracker__form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .token-tracker__form input {
+    width: calc(50% - 6px);
+    min-width: 0;
+  }
+
+  .token-tracker__form .btn--primary {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 4px auto 0;
+  }
+}
