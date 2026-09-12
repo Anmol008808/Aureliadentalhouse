@@ -97,7 +97,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 130px;
-  overflow-x: hidden;
 }
 
 body {
@@ -421,6 +420,24 @@ section { padding-block: var(--space-section); }
   flex-shrink: 0;
 }
 
+/* Groups the action buttons and the hamburger together as ONE flex
+   item within .navbar. flex-wrap:nowrap here means these two can
+   never be split onto different lines by the outer navbar's own
+   wrapping — they either both fit on the current line, or the
+   whole pair wraps down together. This is what actually fixes the
+   "hamburger stranded alone on its own row" bug: the outer flex-wrap
+   algorithm decides line breaks item-by-item, so without this
+   grouping, the button and the hamburger are two separate items
+   that can legally end up on different lines depending on exact
+   viewport width. */
+.navbar__actions-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 0.75rem;
+}
+
 .navbar__phone {
   display: inline-flex;
   align-items: center;
@@ -452,74 +469,6 @@ section { padding-block: var(--space-section); }
 .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(2) { opacity: 0; }
 .navbar__toggle[aria-expanded="true"] .navbar__toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* The full inline link list (9 items + logo + phone + button) needs
-   roughly 1080-1100px of room. Below that, switch to hamburger mode
-   *before* content starts overflowing the pill / viewport, instead of
-   only at the generic 768px "mobile" breakpoint. */
-@media (max-width: 1080px) {
-  .navbar {
-    position: relative;           /* anchor for the dropdown panel below */
-    flex-wrap: nowrap;            /* logo + actions + toggle NEVER wrap */
-    gap: 0.6rem;
-  }
-
-  .navbar__logo { min-width: 0; flex-shrink: 1; }
-  .navbar__logo-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 40vw;              /* logo shrinks instead of pushing siblings off */
-  }
-
-  .navbar__toggle { display: flex; flex-shrink: 0; order: 3; }
-
-  .navbar__actions {
-    order: 2;
-    flex-shrink: 0;
-    gap: 0.5rem;
-  }
-  .navbar__phone { display: none; }   /* icon + number was dead weight once squeezed */
-  .navbar__actions .btn--small {
-    padding: 0.55rem 0.95rem;
-    font-size: 0.82rem;
-  }
-
-  /* Links become a dropdown panel — out of flex flow entirely, so the
-     menu list can never affect the width/wrapping of row 1 again. */
-  .navbar__links {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    order: 4;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    background: var(--paper);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    padding: 0 0.9rem;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height var(--transition-med);
-    z-index: 950;
-  }
-  .navbar__links.is-open { max-height: 480px; padding-block: 0.5rem; }
-  .navbar__links li { width: 100%; padding-block: 0.6rem; border-top: 1px solid var(--border-soft); }
-  .navbar__links li:first-child { border-top: 0; }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    margin-top: 0.5rem;
-    border-radius: var(--radius-md);
-    align-items: center;
-    padding: 0.6rem 0.7rem 0.6rem 0.9rem;
-  }
-  .navbar__logo-text { font-size: 1rem; }
-}
 
 /* ----------------------------------------------------------------
    8. HERO
@@ -780,8 +729,6 @@ section { padding-block: var(--space-section); }
 /* ----------------------------------------------------------------
    13. DOCTOR
    ---------------------------------------------------------------- */
-.doctor { overflow: hidden; }
-
 .doctor__container {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
@@ -1558,7 +1505,7 @@ section { padding-block: var(--space-section); }
    ---------------------------------------------------------------- */
 
 /* ≤1024px — tablets */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .hero__container { grid-template-columns: 1fr; }
   .hero__media { max-width: 520px; margin: 0 auto; order: -1; }
   .hero__content { text-align: center; }
@@ -1584,6 +1531,23 @@ section { padding-block: var(--space-section); }
 /* ≤768px — large phones / small tablets */
 @media (max-width: 768px) {
   html { scroll-padding-top: 90px; }
+
+  .navbar { margin-top: 0.5rem; border-radius: var(--radius-md); align-items: flex-start; flex-wrap: wrap; }
+  .navbar__toggle { display: flex; }
+  .navbar__actions-group { order: 2; margin-left: auto; }
+  .navbar__phone span { display: none; }
+  .navbar__links {
+    order: 4;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-med);
+  }
+  .navbar__links.is-open { max-height: 480px; padding-top: 0.75rem; }
+  .navbar__links li { width: 100%; padding-block: 0.6rem; border-top: 1px solid var(--border-soft); }
 
   .hero__floating-card { position: static; margin-top: 1rem; max-width: none; animation: none; }
   .hero__floating-card--bottom { margin-bottom: 0; }
