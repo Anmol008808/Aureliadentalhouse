@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Doctor Panel — Aurelia Dental House</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1512">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 9c2 4 6 6.5 8 6.5S18 13 20 9' stroke='%23B8905A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<!-- Official Supabase JS client (UMD build via CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  :root {
+    --bg: #0A1512;
+    --surface: #101F1B;
+    --surface-2: #16302A;
+    --surface-hover: #1C3A32;
+    --border: rgba(251, 250, 247, 0.08);
+    --border-strong: rgba(251, 250, 247, 0.16);
+    --text: #F3F1EC;
+    --text-dim: rgba(243, 241, 236, 0.62);
+    --text-faint: rgba(243, 241, 236, 0.4);
+    --teal-500: #2C9385;
+    --gold: #C7A06B;
+    --gold-solid: #B8905A;
+    --success: #3FA968;
+    --success-bg: rgba(63, 169, 104, 0.16);
+    --info: #5B9BD5;
+    --info-bg: rgba(91, 155, 213, 0.16);
+    --rust: #E2685A;
+    --rust-bg: rgba(226, 104, 90, 0.16);
+    --gold-bg: rgba(199, 160, 107, 0.18);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 3rem;
+  }
+  h1, h2, h3 { font-family: var(--font-display); margin: 0; font-weight: 600; }
+  p { margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a { color: inherit; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 1.1rem; }
+  [hidden] { display: none !important; }
+
+  /* ---------------- AUTH VIEWS (login / reset password) ---------------- */
+  #auth-view {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 1.5rem;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.6rem;
+  }
+  .auth-card__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    justify-content: center;
+    margin-bottom: 1.3rem;
+  }
+  .auth-card h1 { font-size: 1.2rem; text-align: center; margin-bottom: 0.3rem; }
+  .auth-card__sub { color: var(--text-dim); font-size: 0.85rem; text-align: center; margin-bottom: 1.4rem; }
+
+  .field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
+  .field label { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.03em; }
+  .field input, .field select, .field textarea {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.9rem;
+    color: var(--text);
+    width: 100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); }
+  .field textarea { resize: vertical; min-height: 70px; }
+
+  .auth-error {
+    color: var(--rust);
+    font-size: 0.82rem;
+    min-height: 1.2em;
+    margin-bottom: 0.8rem;
+    text-align: center;
+  }
+  .auth-success {
+    color: var(--success);
+    font-size: 0.82rem;
+    min-height: 1.2em;
+    margin-bottom: 0.8rem;
+    text-align: center;
+  }
+  .auth-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+  }
+  .auth-links button {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  /* ---------------- BUTTONS ---------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    padding: 0.75rem 1.3rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.15s var(--ease), background 0.15s var(--ease), opacity 0.15s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn--gold { background: var(--gold-solid); color: #0A1512; }
+  .btn--ghost { background: transparent; border-color: var(--border-strong); color: var(--text); }
+  .btn--ghost:hover { background: var(--surface-hover); }
+  .btn--block { width: 100%; }
+  .btn--sm { padding: 0.5rem 0.9rem; font-size: 0.78rem; }
+  .btn[disabled] { opacity: 0.5; pointer-events: none; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .icon-btn:hover { background: var(--surface-hover); }
+
+  /* ---------------- HEADER ---------------- */
+  header.panel-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 21, 18, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+  .panel-header__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .panel-header__brand { display: flex; align-items: center; gap: 0.6rem; }
+  .panel-header__brand h1 { font-size: 1.05rem; }
+  .panel-header__brand p { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .panel-header__actions { display: flex; align-items: center; gap: 0.5rem; }
+
+  .whoami {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.8rem 1rem;
+    margin: 1rem 0;
+  }
+  .whoami__name { font-weight: 700; font-size: 0.95rem; }
+  .whoami__role {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-bg);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-pill);
+  }
+
+  /* ---------------- STATS ---------------- */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    margin: 1.2rem 0;
+  }
+  .stat-tile {
+    background: linear-gradient(160deg, var(--surface-2) 0%, var(--surface) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.95rem 0.6rem;
+    text-align: center;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .stat-tile__value { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+  .stat-tile__label { font-size: 0.65rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-dim); margin-top: 0.2rem; }
+  .stat-tile--completed .stat-tile__value { color: var(--success); }
+  .stat-tile--pending .stat-tile__value { color: var(--gold); }
+  .stat-tile--cancelled .stat-tile__value { color: var(--rust); }
+
+  /* ---------------- CONTROL DECK ----------------
+     Groups stats, view tabs, date navigation and quick filters into
+     one cohesive, elevated card instead of loose stacked rows. */
+  .control-deck {
+    background: linear-gradient(165deg, var(--surface) 0%, #0D1D19 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem 1rem 1.25rem;
+    margin: 1.1rem 0;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .control-deck .stats-row { margin: 0 0 1.05rem; }
+  .control-deck .view-tabs { margin: 0 0 0.9rem; }
+  .control-deck .date-browser { margin: 0; }
+  .control-deck .quick-filters { margin: 0.9rem 0 0; }
+  .control-deck__divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+    margin: 1rem 0;
+  }
+
+  /* ---------------- DATE BROWSER ---------------- */
+  .date-browser {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .date-browser__label { font-size: 0.72rem; color: var(--text-dim); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em; }
+  .date-browser__group {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 0.3rem;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .date-browser input[type="date"] {
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.5rem;
+    color: var(--text);
+    font-size: 0.83rem;
+    min-width: 0;
+    flex: 1 1 110px;
+  }
+  .date-browser input[type="date"]:focus { outline: none; }
+  .date-browser input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9); }
+  .day-nav-btn {
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    flex: 0 0 auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  }
+  .day-nav-btn:hover { background: var(--surface-hover); }
+  #date-today-btn {
+    flex: 0 0 auto;
+    background: var(--surface);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ---------------- VIEW TABS (Day / Upcoming / Previous) ---------------- */
+  .view-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0 0 0.9rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 0.3rem;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+  .view-tab {
+    flex: 1 1 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .view-tab:hover { color: var(--text); }
+  .view-tab[aria-selected="true"] {
+    background: linear-gradient(160deg, var(--gold) 0%, var(--gold-solid) 100%);
+    color: #0A1512;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ---------------- QUICK FILTERS (Previous appointments) ---------------- */
+  .quick-filters {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .quick-filter-chip {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 0.45rem 0.85rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  .quick-filter-chip:hover { background: var(--surface-hover); }
+  .quick-filter-chip[aria-pressed="true"] {
+    background: linear-gradient(160deg, var(--gold) 0%, var(--gold-solid) 100%);
+    border-color: var(--gold);
+    color: #0A1512;
+  }
+
+  /* ---------------- CALENDAR (month view with per-day counts) ---------------- */
+  .calendar-trigger {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold-bg);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 50%;
+    flex: 0 0 auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  }
+  .calendar-trigger:hover { background: var(--gold); color: #0A1512; }
+
+  .calendar-modal {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px 22px 0 0;
+    padding: 1.4rem 1.2rem 1.6rem;
+  }
+  @media (min-width: 640px) {
+    .calendar-modal { border-radius: var(--radius-lg); }
+  }
+  .calendar-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.1rem;
+  }
+  .calendar-modal__title { font-size: 1.15rem; }
+  .calendar-modal__nav { display: flex; align-items: center; gap: 0.5rem; }
+  .calendar-modal__month-label {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    min-width: 128px;
+    text-align: center;
+  }
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 0.4rem;
+  }
+  .calendar-weekdays span {
+    text-align: center;
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.3rem;
+  }
+  .calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: var(--surface-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 0;
+  }
+  .calendar-cell:hover { background: var(--surface-hover); }
+  .calendar-cell[data-outside="true"] { color: var(--text-faint); background: transparent; font-weight: 400; }
+  .calendar-cell[data-today="true"] { border-color: var(--border-strong); }
+  .calendar-cell[data-selected="true"] { border-color: var(--gold); background: var(--gold-bg); color: var(--gold); }
+  .calendar-cell__dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .calendar-cell__count {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .calendar-cell[data-selected="true"] .calendar-cell__count { color: #0A1512; background: var(--gold); border-radius: var(--radius-pill); padding: 0 0.3rem; }
+  .calendar-modal__footer {
+    margin-top: 1.1rem;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  /* ---------------- GROUPED-BY-DATE LIST (Upcoming / Previous) ---------------- */
+  .day-group { margin-bottom: 1.2rem; }
+  .day-group__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.4rem 0.1rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-group__title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+  .day-group__count { font-size: 0.72rem; color: var(--gold); font-weight: 700; white-space: nowrap; }
+
+  /* ---------------- SEARCH & ACTIONS ---------------- */
+  .toolbar {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .toolbar input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: 0.75rem 1.2rem;
+    color: var(--text);
+  }
+  .toolbar input:focus { outline: none; border-color: var(--gold); }
+  .toolbar input::placeholder { color: var(--text-faint); }
+
+  .list-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1.6rem 0 0.8rem;
+  }
+  .list-heading h2 { font-size: 1.05rem; }
+  .list-heading .meta { font-size: 0.78rem; color: var(--text-dim); }
+
+  .empty-state, .error-state {
+    text-align: center;
+    padding: 2.4rem 1rem;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    background: var(--surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+  }
+  .error-state { border-color: var(--rust); color: var(--rust); border-style: solid; }
+  .loading-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  /* ---------------- APPOINTMENT CARD ---------------- */
+  .appt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.2rem;
+    margin-bottom: 0.85rem;
+  }
+  .appt-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  .appt-card__token { font-family: var(--font-display); font-size: 1.15rem; color: var(--gold); }
+  .appt-card__name { font-weight: 700; font-size: 1rem; margin-top: 0.15rem; }
+  .appt-card__meta { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+    background: var(--surface-2);
+  }
+  .status-badge[data-status="Appointment Confirmed"] { background: var(--info-bg); color: var(--info); }
+  .status-badge[data-status="Waiting"] { background: var(--gold-bg); color: var(--gold); }
+  .status-badge[data-status="Patient Called"] { background: var(--info-bg); color: var(--info); }
+  .status-badge[data-status="In Consultation"] { background: var(--gold-solid); color: #0A1512; }
+  .status-badge[data-status="Treatment Started"] { background: var(--teal-500); color: #E9FBF6; }
+  .status-badge[data-status="Completed"] { background: var(--success-bg); color: var(--success); }
+  .status-badge[data-status="Cancelled"] { background: var(--rust-bg); color: var(--rust); }
+
+  .appt-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.8rem;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 0.9rem;
+  }
+  .appt-card__row strong { color: var(--text); font-weight: 600; }
+
+  .appt-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .appt-card__status-select {
+    flex: 1 1 140px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.7rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  /* ---------------- MODAL ---------------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 12, 10, 0.72);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 200;
+  }
+  .modal-backdrop[hidden] { display: none; }
+  .modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px 22px 0 0;
+    padding: 1.5rem 1.3rem 2rem;
+  }
+  @media (min-width: 640px) {
+    .modal-backdrop { align-items: center; padding: 1.5rem; }
+    .modal { border-radius: var(--radius-lg); }
+  }
+  .modal__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+  .modal__header h2 { font-size: 1.15rem; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .form-grid--full { grid-template-columns: 1fr; }
+  .field-readonly {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.85rem;
+  }
+
+  .modal__footer { display: flex; gap: 0.6rem; margin-top: 0.6rem; }
+  .modal__status { font-size: 0.82rem; min-height: 1.2em; margin-top: 0.6rem; }
+
+  /* ---------------- TOAST ---------------- */
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.4rem;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 0.8rem 1.3rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+    z-index: 300;
+    max-width: 90vw;
+    text-align: center;
+  }
+  #toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.is-error { border-color: var(--rust); }
+
+  .refresh-note { font-size: 0.72rem; color: var(--text-faint); text-align: center; margin-top: 1.5rem; }
+
+  @media (max-width: 400px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .view-tab { flex: 1 1 auto; text-align: center; padding: 0.5rem 0.6rem; }
+    .date-browser { justify-content: space-between; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SUPABASE CONFIGURATION — public anon/publishable key only.
+     Never place the service_role key here; it must never appear
+     in any frontend code. RLS on the database is what enforces
+     access — this key alone grants nothing by itself.
+     ============================================================ -->
+<script>
+  const SUPABASE_URL = "https://xpffspawsuihjoetvvon.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_c7GcZSkIpCa5dfw_eexoEw_uE31bPsY";
+</script>
+
+<!-- ================= AUTH VIEW (login / password reset) ================= -->
+<div id="auth-view">
+  <div class="auth-card">
+    <div class="auth-card__brand">
+      <svg width="30" height="30" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <circle cx="17" cy="17" r="16" stroke="#C7A06B" stroke-width="1.2"/>
+        <path d="M8 15c3 6 8 9.5 9 9.5s6-3.5 9-9.5" stroke="#F3F1EC" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Sign-in form -->
+    <div id="login-panel">
+      <h1>Doctor Panel</h1>
+      <p class="auth-card__sub">Aurelia Dental House — staff sign in</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" required>
+        </div>
+        <p class="auth-error" id="login-error"></p>
+        <button type="submit" class="btn btn--gold btn--block" id="login-submit">Sign In</button>
+      </form>
+
+      <div class="auth-links">
+        <button type="button" id="forgot-password-link">Forgot password?</button>
+      </div>
+    </div>
+
+    <!-- Forgot-password request form -->
+    <div id="forgot-panel" hidden>
+      <h1>Reset Password</h1>
+      <p class="auth-card__sub">We'll email you a secure link to set a new password.</p>
+
+      <form id="forgot-form" novalidate>
+        <div class="field">
+          <label for="forgot-email">Email</label>
+          <input type="email" id="forgot-email" autocomplete="username" required>
+        </div>
+        <p class="auth-error" id="forgot-error"></p>
+        <p class="auth-success" id="forgot-success"></p>
+        <button type="submit" class="btn btn--gold btn--block" id="forgot-submit">Send Reset Link</button>
+      </form>
+
+      <div class="auth-links">
+        <button type="button" id="back-to-login-link">Back to sign in</button>
+      </div>
+    </div>
+
+    <!-- Set-new-password form (shown after clicking the emailed recovery link) -->
+    <div id="recovery-panel" hidden>
+      <h1>Set New Password</h1>
+      <p class="auth-card__sub">Choose a new password for your account.</p>
+
+      <form id="recovery-form" novalidate>
+        <div class="field">
+          <label for="recovery-password">New password</label>
+          <input type="password" id="recovery-password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <p class="auth-error" id="recovery-error"></p>
+        <button type="submit" class="btn btn--gold btn--block" id="recovery-submit">Update Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN PANEL (hidden until authenticated + active) ================= -->
+<div id="panel" hidden>
+
+  <header class="panel-header">
+    <div class="wrap panel-header__row">
+      <div class="panel-header__brand">
+        <svg width="28" height="28" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="17" cy="17" r="16" stroke="#C7A06B" stroke-width="1.2"/>
+          <path d="M8 15c3 6 8 9.5 9 9.5s6-3.5 9-9.5" stroke="#F3F1EC" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <h1>Aurelia Dental House</h1>
+          <p>Doctor Panel</p>
+        </div>
+      </div>
+      <div class="panel-header__actions">
+        <button class="icon-btn" id="refresh-btn" aria-label="Refresh dashboard" title="Refresh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4v6h6M20 20v-6h-6M4.5 15a8 8 0 0014.9 2.6M19.5 9A8 8 0 004.6 6.4" stroke="#F3F1EC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn" id="logout-btn" aria-label="Log out" title="Log out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="#F3F1EC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="whoami" id="whoami">
+      <p class="whoami__name" id="whoami-name">—</p>
+      <span class="whoami__role" id="whoami-role">—</span>
+    </div>
+
+    <!-- Control deck: stats, view switcher, and date navigation live
+         together as one elevated card instead of loose stacked rows -->
+    <div class="control-deck">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-tile">
+          <p class="stat-tile__value" data-stat-total>—</p>
+          <p class="stat-tile__label" id="stat-total-label">Today</p>
+        </div>
+        <div class="stat-tile stat-tile--completed">
+          <p class="stat-tile__value" data-stat-completed>—</p>
+          <p class="stat-tile__label">Completed</p>
+        </div>
+        <div class="stat-tile stat-tile--pending">
+          <p class="stat-tile__value" data-stat-pending>—</p>
+          <p class="stat-tile__label">Pending</p>
+        </div>
+        <div class="stat-tile stat-tile--cancelled">
+          <p class="stat-tile__value" data-stat-cancelled>—</p>
+          <p class="stat-tile__label">Cancelled</p>
+        </div>
+      </div>
+
+      <div class="control-deck__divider"></div>
+
+      <!-- View tabs — switch between a single day, the upcoming week,
+           and previous appointments (quick filters) -->
+      <div class="view-tabs" role="tablist" aria-label="Appointment view">
+        <button class="view-tab" id="tab-day" type="button" role="tab" aria-selected="true">Day</button>
+        <button class="view-tab" id="tab-upcoming" type="button" role="tab" aria-selected="false">Upcoming</button>
+        <button class="view-tab" id="tab-previous" type="button" role="tab" aria-selected="false">Previous</button>
+      </div>
+
+      <!-- Date browser — pick any date, past or future, to see that
+           day's appointments (defaults to today). Only shown in Day view. -->
+      <div class="date-browser" id="date-browser">
+        <span class="date-browser__label">Viewing date</span>
+        <div class="date-browser__group">
+          <button class="day-nav-btn" id="date-prev-btn" type="button" aria-label="Previous day" title="Previous day">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <input type="date" id="date-picker" aria-label="Viewing date">
+          <button class="day-nav-btn" id="date-next-btn" type="button" aria-label="Next day" title="Next day">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="calendar-trigger" id="calendar-open-btn" type="button" aria-haspopup="dialog" aria-label="Open calendar" title="Open calendar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 9.5h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="date-today-btn" type="button">Today</button>
+      </div>
+
+      <!-- Quick filters — only shown in Previous view -->
+      <div class="quick-filters" id="quick-filters" hidden>
+        <button class="quick-filter-chip" data-range="yesterday" type="button" aria-pressed="true">Yesterday</button>
+        <button class="quick-filter-chip" data-range="last7" type="button" aria-pressed="false">Last 7 Days</button>
+        <button class="quick-filter-chip" data-range="last30" type="button" aria-pressed="false">Last 30 Days</button>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input type="text" id="search-input" placeholder="Search name, phone, or token…" autocomplete="off">
+      <button class="btn btn--gold" id="new-walkin-btn">+ Walk-in</button>
+    </div>
+
+    <div class="list-heading">
+      <h2 id="list-title">Today's Appointments</h2>
+      <span class="meta" id="list-meta"></span>
+    </div>
+
+    <div id="appt-list"><div class="loading-state">Loading…</div></div>
+
+    <p class="refresh-note" id="refresh-note">Auto-refreshes every 30 seconds · last updated <span id="last-updated">—</span></p>
+
+  </main>
+</div>
+
+<!-- ================= EDIT / WALK-IN MODAL ================= -->
+<div class="modal-backdrop" id="modal-backdrop" hidden>
+  <div class="modal">
+    <div class="modal__header">
+      <h2 id="modal-title">Edit Appointment</h2>
+      <button class="icon-btn" id="modal-close" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <form id="modal-form" novalidate>
+      <!-- Identity/audit fields are display-only: token, created_at, id, and
+           created_by are database-trigger-protected (see Step 2 RLS) and are
+           never included in the update payload sent from this form. -->
+      <div class="form-grid" id="modal-readonly-row" hidden>
+        <div class="field">
+          <label>Token</label>
+          <p class="field-readonly" id="modal-token-display">—</p>
+        </div>
+        <div class="field">
+          <label>Created</label>
+          <p class="field-readonly" id="modal-created-display">—</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="modal-name">Patient name</label>
+          <input type="text" id="modal-name" name="patient_name" required>
+        </div>
+        <div class="field">
+          <label for="modal-phone">Mobile</label>
+          <input type="tel" id="modal-phone" name="phone" required>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="modal-age">Age</label>
+          <input type="number" id="modal-age" name="age" min="1" max="120" required>
+        </div>
+        <div class="field">
+          <label for="modal-gender">Gender</label>
+          <select id="modal-gender" name="gender" required>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="modal-treatment">Treatment</label>
+          <select id="modal-treatment" name="treatment" required>
+            <option value="Cosmetic Dentistry">Cosmetic Dentistry</option>
+            <option value="Dental Implants">Dental Implants</option>
+            <option value="Invisalign / Orthodontics">Invisalign / Orthodontics</option>
+            <option value="Root Canal Therapy">Root Canal Therapy</option>
+            <option value="Pediatric Dentistry">Pediatric Dentistry</option>
+            <option value="Emergency Care">Emergency Care</option>
+            <option value="General Checkup">General Checkup</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="modal-date">Date</label>
+          <input type="date" id="modal-date" name="appointment_date" required>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="modal-time">Time</label>
+          <select id="modal-time" name="appointment_time" required>
+            <option value="Morning (8 AM – 11 AM)">Morning (8 AM – 11 AM)</option>
+            <option value="Midday (11 AM – 2 PM)">Midday (11 AM – 2 PM)</option>
+            <option value="Afternoon (2 PM – 6 PM)">Afternoon (2 PM – 6 PM)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="modal-status">Status</label>
+          <select id="modal-status" name="status">
+            <option>Appointment Confirmed</option>
+            <option>Waiting</option>
+            <option>Patient Called</option>
+            <option>In Consultation</option>
+            <option>Treatment Started</option>
+            <option>Completed</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid form-grid--full">
+        <div class="field">
+          <label for="modal-notes">Notes</label>
+          <textarea id="modal-notes" name="notes"></textarea>
+        </div>
+      </div>
+
+      <div class="modal__footer">
+        <button type="submit" class="btn btn--gold btn--block" id="modal-save">Save</button>
+      </div>
+      <p class="modal__status" id="modal-status-msg"></p>
+    </form>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ================= CALENDAR MODAL ================= -->
+<div class="modal-backdrop" id="calendar-backdrop" hidden>
+  <div class="calendar-modal">
+    <div class="calendar-modal__header">
+      <h2 class="calendar-modal__title">Appointment Calendar</h2>
+      <button class="icon-btn" id="calendar-close" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="calendar-modal__nav">
+      <button class="day-nav-btn" id="calendar-prev-month" type="button" aria-label="Previous month">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="calendar-modal__month-label" id="calendar-month-label">—</span>
+      <button class="day-nav-btn" id="calendar-next-month" type="button" aria-label="Next month">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#F3F1EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="calendar-weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="calendar-grid" id="calendar-grid"></div>
+    <p class="calendar-modal__footer">Tap a date to view its appointments</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     SUPABASE CLIENT
+     Frontend uses ONLY the anon/publishable key above. Every read
+     and write below goes through Postgres Row Level Security —
+     this file never bypasses it and never touches service_role.
+     ============================================================ */
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  });
+
+  const STATUSES = [
+    "Appointment Confirmed",
+    "Waiting",
+    "Patient Called",
+    "In Consultation",
+    "Treatment Started",
+    "Completed",
+    "Cancelled",
+  ];
+
+  const $ = (sel, scope = document) => scope.querySelector(sel);
+  const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+
+  function isConfigured() {
+    return (
+      typeof SUPABASE_URL === "string" &&
+      SUPABASE_URL.startsWith("http") &&
+      typeof SUPABASE_ANON_KEY === "string" &&
+      SUPABASE_ANON_KEY.length > 20 &&
+      !SUPABASE_URL.includes("PASTE_") &&
+      !SUPABASE_ANON_KEY.includes("PASTE_")
+    );
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  /* ---------------- TOAST ---------------- */
+  let toastTimer;
+  function showToast(message, isError) {
+    const toast = $("#toast");
+    toast.textContent = message;
+    toast.classList.toggle("is-error", !!isError);
+    toast.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 3200);
+  }
+
+  /* ============================================================
+     AUTH STATE
+     ============================================================ */
+  let staffProfile = null; // { id, full_name, role, is_active }
+  let refreshTimer = null;
+
+  function showView(viewId) {
+    ["login-panel", "forgot-panel", "recovery-panel"].forEach((id) => {
+      $("#" + id).hidden = id !== viewId;
+    });
+    $("#auth-view").hidden = false;
+    $("#panel").hidden = true;
+  }
+
+  function showPanel() {
+    $("#auth-view").hidden = true;
+    $("#panel").hidden = false;
+  }
+
+  async function init() {
+    if (!isConfigured()) {
+      document.body.innerHTML =
+        '<div style="padding:2rem;color:#F3F1EC;font-family:sans-serif;max-width:480px;margin:2rem auto;">' +
+        "<h2>Configuration required</h2>" +
+        "<p>Set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> near the top of this file before using the panel.</p>" +
+        "</div>";
+      return;
+    }
+
+    wireAuthForms();
+    wirePanelControls();
+
+    // Resolve the current session FIRST (matches the known-working
+    // panel's order) — if a session is already persisted, load the
+    // profile immediately rather than waiting on the listener's
+    // INITIAL_SESSION event.
+    const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+    console.log("[auth] getSession() on init — session present:", !!sessionData.session, sessionError);
+    if (sessionError || !sessionData.session) {
+      showView("login-panel");
+    } else {
+      await loadStaffProfile(sessionData.session);
+    }
+
+    // Supabase reacts to every future change here — sign-in, sign-out,
+    // token refresh, password recovery.
+    sb.auth.onAuthStateChange((event, session) => {
+      console.log("[auth] onAuthStateChange:", event, "session present:", !!session, session?.user?.id);
+      if (event === "PASSWORD_RECOVERY") {
+        showView("recovery-panel");
+        return;
+      }
+      if (event === "SIGNED_OUT") {
+        console.log("[auth] SIGNED_OUT event received — returning to login-panel");
+        staffProfile = null;
+        if (refreshTimer) clearInterval(refreshTimer);
+        showView("login-panel");
+        return;
+      }
+      if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
+        loadStaffProfile(session);
+      }
+    });
+  }
+
+  /**
+   * Loads the row in staff_profiles matching the authenticated user.
+   * Role comes from THIS row only — never from anything the client
+   * could have supplied itself. If there's no row, or is_active is
+   * false, access is denied and the session is ended immediately.
+   */
+  async function loadStaffProfile(session) {
+    const { data, error } = await sb
+      .from("staff_profiles")
+      .select("id, full_name, role, is_active")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    console.log("[auth] staff_profiles lookup for user", session.user.id, "→", { data, error });
+
+    if (error) {
+      console.error("[auth] staff_profiles query errored (likely RLS denying SELECT) — signing out:", error);
+      await denyAccess("Couldn't verify your account. Please try signing in again.");
+      return;
+    }
+    if (!data || data.is_active !== true) {
+      console.error(
+        "[auth] No matching staff_profiles row, or is_active is not true — signing out. Row found:",
+        data
+      );
+      await denyAccess("This account is inactive or not provisioned. Contact the clinic owner.");
+      return;
+    }
+
+    staffProfile = data;
+    showPanel();
+    renderWhoAmI();
+    applyRoleUI();
+    startDashboard();
+  }
+
+  async function denyAccess(message) {
+    console.warn("[auth] denyAccess() called — forcing signOut(). Reason:", message);
+    await sb.auth.signOut();
+    showView("login-panel");
+    $("#login-error").textContent = message;
+  }
+
+  function renderWhoAmI() {
+    $("#whoami-name").textContent = staffProfile.full_name || "—";
+    $("#whoami-role").textContent = staffProfile.role;
+  }
+
+  /**
+   * UI-level role gating. This is convenience only — every one of
+   * these actions is independently enforced by Postgres RLS
+   * regardless of what this function hides or shows. Hiding a
+   * button here never substitutes for a database policy.
+   */
+  function applyRoleUI() {
+    const role = staffProfile.role;
+    $("#new-walkin-btn").hidden = !(role === "owner" || role === "staff");
+  }
+
+  function canDelete() {
+    return staffProfile && staffProfile.role === "owner";
+  }
+
+  /* ============================================================
+     AUTH FORMS
+     ============================================================ */
+  function wireAuthForms() {
+    $("#login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = $("#login-email").value.trim();
+      const password = $("#login-password").value;
+      const errorEl = $("#login-error");
+      const btn = $("#login-submit");
+
+      errorEl.textContent = "";
+      btn.disabled = true;
+      btn.textContent = "Signing in…";
+
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      console.log("[auth] signInWithPassword result:", { error });
+
+      btn.disabled = false;
+      btn.textContent = "Sign In";
+
+      if (error) {
+        errorEl.textContent = "Incorrect email or password.";
+      }
+      // On success, onAuthStateChange picks it up and loads the profile.
+    });
+
+    $("#forgot-password-link").addEventListener("click", () => {
+      $("#login-error").textContent = "";
+      $("#forgot-error").textContent = "";
+      $("#forgot-success").textContent = "";
+      showView("forgot-panel");
+    });
+
+    $("#back-to-login-link").addEventListener("click", () => showView("login-panel"));
+
+    $("#forgot-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = $("#forgot-email").value.trim();
+      const errorEl = $("#forgot-error");
+      const successEl = $("#forgot-success");
+      const btn = $("#forgot-submit");
+
+      errorEl.textContent = "";
+      successEl.textContent = "";
+      btn.disabled = true;
+
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname,
+      });
+
+      btn.disabled = false;
+
+      if (error) {
+        errorEl.textContent = "Couldn't send the reset email. Please try again.";
+      } else {
+        successEl.textContent = "If that email has an account, a reset link is on its way.";
+      }
+    });
+
+    $("#recovery-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newPassword = $("#recovery-password").value;
+      const errorEl = $("#recovery-error");
+      const btn = $("#recovery-submit");
+
+      if (newPassword.length < 8) {
+        errorEl.textContent = "Password must be at least 8 characters.";
+        return;
+      }
+
+      errorEl.textContent = "";
+      btn.disabled = true;
+      btn.textContent = "Updating…";
+
+      const { error } = await sb.auth.updateUser({ password: newPassword });
+
+      btn.disabled = false;
+      btn.textContent = "Update Password";
+
+      if (error) {
+        errorEl.textContent = "Couldn't update your password. Please try the reset link again.";
+        return;
+      }
+
+      showToast("Password updated");
+      const { data } = await sb.auth.getSession();
+      if (data.session) loadStaffProfile(data.session);
+    });
+  }
+
+  /* ============================================================
+     PANEL CONTROLS
+     ============================================================ */
+  function wirePanelControls() {
+    $("#logout-btn").addEventListener("click", () => sb.auth.signOut());
+    $("#refresh-btn").addEventListener("click", () => loadToday(true));
+    $("#new-walkin-btn").addEventListener("click", openWalkinModal);
+    $("#modal-close").addEventListener("click", closeModal);
+    $("#modal-backdrop").addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+    $("#modal-form").addEventListener("submit", handleModalSubmit);
+
+    $("#date-picker").addEventListener("change", (e) => {
+      if (e.target.value) { setViewMode("day"); loadForDate(e.target.value, true); }
+    });
+    $("#date-today-btn").addEventListener("click", () => {
+      setViewMode("day");
+      loadForDate(todayString(), true);
+    });
+    $("#date-prev-btn").addEventListener("click", () => shiftViewedDay(-1));
+    $("#date-next-btn").addEventListener("click", () => shiftViewedDay(1));
+    $("#calendar-open-btn").addEventListener("click", openCalendarModal);
+    $("#calendar-close").addEventListener("click", closeCalendarModal);
+    $("#calendar-backdrop").addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) closeCalendarModal();
+    });
+    $("#calendar-prev-month").addEventListener("click", () => shiftCalendarMonth(-1));
+    $("#calendar-next-month").addEventListener("click", () => shiftCalendarMonth(1));
+
+    $("#tab-day").addEventListener("click", () => {
+      setViewMode("day");
+      loadForDate(currentViewDate || todayString(), true);
+    });
+    $("#tab-upcoming").addEventListener("click", () => {
+      setViewMode("upcoming");
+      loadUpcoming(true);
+    });
+    $("#tab-previous").addEventListener("click", () => {
+      setViewMode("previous");
+      loadPrevious(currentPreviousRange, true);
+    });
+
+    $$(".quick-filter-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        currentPreviousRange = chip.dataset.range;
+        $$(".quick-filter-chip").forEach((c) => c.setAttribute("aria-pressed", c === chip ? "true" : "false"));
+        loadPrevious(currentPreviousRange, true);
+      });
+    });
+
+    let searchDebounce;
+    $("#search-input").addEventListener("input", (e) => {
+      clearTimeout(searchDebounce);
+      const query = e.target.value.trim();
+      searchDebounce = setTimeout(() => {
+        if (query) {
+          runSearch(query);
+        } else {
+          reloadCurrentView();
+        }
+      }, 350);
+    });
+  }
+
+  /* ---------------- VIEW MODE (Day / Upcoming / Previous) ---------------- */
+  let viewMode = "day"; // "day" | "upcoming" | "previous"
+  let currentPreviousRange = "yesterday"; // "yesterday" | "last7" | "last30"
+
+  function setViewMode(mode) {
+    viewMode = mode;
+    ["day", "upcoming", "previous"].forEach((m) => {
+      $("#tab-" + m).setAttribute("aria-selected", m === mode ? "true" : "false");
+    });
+    $("#date-browser").hidden = mode !== "day";
+    $("#quick-filters").hidden = mode !== "previous";
+  }
+
+  function reloadCurrentView() {
+    if (viewMode === "upcoming") return loadUpcoming();
+    if (viewMode === "previous") return loadPrevious(currentPreviousRange);
+    return loadForDate(currentViewDate || todayString());
+  }
+
+  function shiftViewedDay(delta) {
+    setViewMode("day");
+    const base = new Date((currentViewDate || todayString()) + "T00:00:00");
+    base.setDate(base.getDate() + delta);
+    loadForDate(formatDateStr(base), true);
+  }
+
+  function startDashboard() {
+    setViewMode("day");
+    loadForDate(todayString());
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(() => {
+      // Only auto-refresh while actively viewing today with no search
+      // typed — browsing a past/future date shouldn't silently jump
+      // back or reload under the doctor while they're reading it.
+      if (!$("#search-input").value.trim() && viewMode === "day" && currentViewDate === todayString()) {
+        reloadCurrentView();
+      }
+    }, 30000);
+  }
+
+  let currentViewDate = null; // yyyy-mm-dd currently shown in the list
+
+  function formatDateStr(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  function todayString() {
+    return formatDateStr(new Date());
+  }
+
+  function friendlyDateLabel(dateStr) {
+    const today = todayString();
+    if (dateStr === today) return "Today's Appointments";
+    const d = new Date(dateStr + "T00:00:00");
+    const label = d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+    return dateStr > today ? `Upcoming — ${label}` : `Past — ${label}`;
+  }
+
+  /* ---------------- LOAD APPOINTMENTS FOR A GIVEN DATE + STATS
+     (single query, no RPC needed — staff already has full read
+     access to `appointments` under the existing RLS policy, so
+     browsing any past or future date needs no new backend at all) ---------------- */
+  async function loadForDate(dateStr, manual) {
+    currentViewDate = dateStr;
+    $("#date-picker").value = dateStr;
+
+    const listEl = $("#appt-list");
+    if (manual) listEl.innerHTML = '<div class="loading-state">Loading…</div>';
+
+    const { data, error } = await sb
+      .from("appointments")
+      .select("*")
+      .eq("appointment_date", dateStr)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      renderError(error);
+      if (manual) showToast("Couldn't load that date — check your connection", true);
+      return;
+    }
+
+    renderStats(data);
+    renderList(data, friendlyDateLabel(dateStr));
+    $("#stat-total-label").textContent = dateStr === todayString() ? "Today" : dateStr;
+
+    const isToday = dateStr === todayString();
+    $("#refresh-note").hidden = !isToday;
+    if (isToday) {
+      $("#last-updated").textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+    if (manual) showToast("Dashboard refreshed");
+  }
+
+  // Kept as a thin alias so existing call sites (search-clear, refresh
+  // button, auto-refresh timer) simply mean "reload whatever date is
+  // currently being viewed" rather than always forcing back to today.
+  function loadToday(manual) {
+    return loadForDate(currentViewDate || todayString(), manual);
+  }
+
+  /* ---------------- CALENDAR MODAL (month view with per-day counts) ----------------
+     One range query per visible month — counts are grouped client-side,
+     same lightweight approach as the rest of the dashboard (no RPC). */
+  let calendarMonthDate = null; // first-of-month Date currently shown in the modal
+
+  function openCalendarModal() {
+    const base = new Date((currentViewDate || todayString()) + "T00:00:00");
+    calendarMonthDate = new Date(base.getFullYear(), base.getMonth(), 1);
+    renderCalendarMonth();
+    $("#calendar-backdrop").hidden = false;
+  }
+
+  function closeCalendarModal() {
+    $("#calendar-backdrop").hidden = true;
+  }
+
+  function shiftCalendarMonth(delta) {
+    calendarMonthDate = new Date(calendarMonthDate.getFullYear(), calendarMonthDate.getMonth() + delta, 1);
+    renderCalendarMonth();
+  }
+
+  async function renderCalendarMonth() {
+    const year = calendarMonthDate.getFullYear();
+    const month = calendarMonthDate.getMonth();
+    $("#calendar-month-label").textContent = calendarMonthDate.toLocaleDateString(undefined, {
+      month: "long", year: "numeric",
+    });
+
+    const firstOfMonth = new Date(year, month, 1);
+    const lastOfMonth = new Date(year, month + 1, 0);
+    const gridStart = new Date(firstOfMonth);
+    gridStart.setDate(gridStart.getDate() - gridStart.getDay()); // back to Sunday
+    const gridEnd = new Date(lastOfMonth);
+    gridEnd.setDate(gridEnd.getDate() + (6 - gridEnd.getDay())); // forward to Saturday
+
+    const startStr = formatDateStr(gridStart);
+    const endStr = formatDateStr(gridEnd);
+
+    const { data, error } = await sb
+      .from("appointments")
+      .select("appointment_date")
+      .gte("appointment_date", startStr)
+      .lte("appointment_date", endStr);
+
+    const counts = {};
+    if (!error && data) {
+      data.forEach((row) => {
+        counts[row.appointment_date] = (counts[row.appointment_date] || 0) + 1;
+      });
+    }
+
+    const today = todayString();
+    const selected = currentViewDate || today;
+    const grid = $("#calendar-grid");
+    grid.innerHTML = "";
+
+    const cursor = new Date(gridStart);
+    while (cursor <= gridEnd) {
+      const dStr = formatDateStr(cursor);
+      const count = counts[dStr] || 0;
+      const outside = cursor.getMonth() !== month;
+
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "calendar-cell";
+      cell.dataset.outside = String(outside);
+      cell.setAttribute("data-today", String(dStr === today));
+      cell.setAttribute("data-selected", String(dStr === selected));
+      cell.setAttribute(
+        "aria-label",
+        `${dStr}, ${count} appointment${count === 1 ? "" : "s"}`
+      );
+      cell.innerHTML = `
+        <span>${cursor.getDate()}</span>
+        ${count > 0 ? `<span class="calendar-cell__count">${count}</span>` : ""}
+      `;
+      cell.addEventListener("click", () => {
+        setViewMode("day");
+        loadForDate(dStr, true);
+        closeCalendarModal();
+      });
+      grid.appendChild(cell);
+
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  }
+
+  function addDays(dateStr, n) {
+    const d = new Date(dateStr + "T00:00:00");
+    d.setDate(d.getDate() + n);
+    return formatDateStr(d);
+  }
+
+  function groupLabel(dateStr) {
+    const today = todayString();
+    if (dateStr === today) return "Today";
+    if (dateStr === addDays(today, -1)) return "Yesterday";
+    if (dateStr === addDays(today, 1)) return "Tomorrow";
+    return new Date(dateStr + "T00:00:00").toLocaleDateString(undefined, {
+      weekday: "long", month: "short", day: "numeric",
+    });
+  }
+
+  /* Groups a flat list by appointment_date and renders day-group
+     sections (each with its own header + count), reusing the same
+     cardTemplate/wiring as the single-day view. */
+  function renderGroupedList(list, title, sortDir) {
+    $("#list-title").textContent = title;
+    $("#list-meta").textContent = list.length + (list.length === 1 ? " patient" : " patients");
+    const container = $("#appt-list");
+
+    if (!list.length) {
+      container.innerHTML = '<div class="empty-state">No appointments to show.</div>';
+      return;
+    }
+
+    const groups = {};
+    list.forEach((a) => {
+      (groups[a.appointment_date] = groups[a.appointment_date] || []).push(a);
+    });
+    const dates = Object.keys(groups).sort((a, b) =>
+      sortDir === "desc" ? b.localeCompare(a) : a.localeCompare(b)
+    );
+
+    container.innerHTML = dates.map((dateStr) => {
+      const rows = groups[dateStr];
+      return `
+        <section class="day-group">
+          <div class="day-group__header">
+            <span class="day-group__title">${escapeHtml(groupLabel(dateStr))} · ${escapeHtml(dateStr)}</span>
+            <span class="day-group__count">${rows.length}${rows.length === 1 ? " appt" : " appts"}</span>
+          </div>
+          ${rows.map(cardTemplate).join("")}
+        </section>
+      `;
+    }).join("");
+
+    $$(".appt-card", container).forEach((card) => {
+      const id = card.getAttribute("data-id");
+      const record = list.find((a) => a.id === id);
+
+      $(".appt-card__status-select", card).addEventListener("change", (e) =>
+        updateStatus(id, e.target.value, card)
+      );
+      $("[data-action='edit']", card)?.addEventListener("click", () => openEditModal(record));
+      $("[data-action='delete']", card)?.addEventListener("click", () => deleteAppointment(id, card));
+    });
+  }
+
+  /* ---------------- UPCOMING (next 7 days, grouped by date) ---------------- */
+  async function loadUpcoming(manual) {
+    const listEl = $("#appt-list");
+    if (manual) listEl.innerHTML = '<div class="loading-state">Loading…</div>';
+
+    const startStr = todayString();
+    const endStr = addDays(startStr, 6);
+
+    const { data, error } = await sb
+      .from("appointments")
+      .select("*")
+      .gte("appointment_date", startStr)
+      .lte("appointment_date", endStr)
+      .order("appointment_date", { ascending: true })
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      renderError(error);
+      if (manual) showToast("Couldn't load upcoming appointments — check your connection", true);
+      return;
+    }
+
+    renderStats(data);
+    $("#stat-total-label").textContent = "Next 7 Days";
+    $("#refresh-note").hidden = true;
+    renderGroupedList(data, "Upcoming Appointments (Next 7 Days)", "asc");
+    if (manual) showToast("Dashboard refreshed");
+  }
+
+  /* ---------------- PREVIOUS (Yesterday / Last 7 / Last 30, grouped by date) ---------------- */
+  async function loadPrevious(rangeKey, manual) {
+    const listEl = $("#appt-list");
+    if (manual) listEl.innerHTML = '<div class="loading-state">Loading…</div>';
+
+    const today = todayString();
+    let startStr, endStr, title;
+    if (rangeKey === "last7") {
+      startStr = addDays(today, -7);
+      endStr = addDays(today, -1);
+      title = "Previous Appointments — Last 7 Days";
+    } else if (rangeKey === "last30") {
+      startStr = addDays(today, -30);
+      endStr = addDays(today, -1);
+      title = "Previous Appointments — Last 30 Days";
+    } else {
+      startStr = addDays(today, -1);
+      endStr = addDays(today, -1);
+      title = "Previous Appointments — Yesterday";
+    }
+
+    const { data, error } = await sb
+      .from("appointments")
+      .select("*")
+      .gte("appointment_date", startStr)
+      .lte("appointment_date", endStr)
+      .order("appointment_date", { ascending: false })
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      renderError(error);
+      if (manual) showToast("Couldn't load previous appointments — check your connection", true);
+      return;
+    }
+
+    renderStats(data);
+    $("#stat-total-label").textContent = title.replace("Previous Appointments — ", "");
+    $("#refresh-note").hidden = true;
+    renderGroupedList(data, title, "desc");
+    if (manual) showToast("Dashboard refreshed");
+  }
+
+  /* ---------------- SEARCH (three parameterized ilike queries, merged) ---------------- */
+  async function runSearch(query) {
+    $("#appt-list").innerHTML = '<div class="loading-state">Searching…</div>';
+    const pattern = `%${query}%`;
+
+    try {
+      const [byName, byPhone, byToken] = await Promise.all([
+        sb.from("appointments").select("*").ilike("patient_name", pattern),
+        sb.from("appointments").select("*").ilike("phone", pattern),
+        sb.from("appointments").select("*").ilike("token", pattern),
+      ]);
+
+      const firstError = byName.error || byPhone.error || byToken.error;
+      if (firstError) throw firstError;
+
+      const merged = new Map();
+      [...byName.data, ...byPhone.data, ...byToken.data].forEach((row) => merged.set(row.id, row));
+      const results = Array.from(merged.values()).sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      renderList(results, `Results for "${query}"`);
+    } catch (err) {
+      renderError(err);
+      showToast("Search failed — check your connection", true);
+    }
+  }
+
+  function renderStats(list) {
+    let completed = 0, cancelled = 0, pending = 0;
+    list.forEach((a) => {
+      if (a.status === "Completed") completed++;
+      else if (a.status === "Cancelled") cancelled++;
+      else pending++;
+    });
+    $("[data-stat-total]").textContent = list.length;
+    $("[data-stat-completed]").textContent = completed;
+    $("[data-stat-pending]").textContent = pending;
+    $("[data-stat-cancelled]").textContent = cancelled;
+  }
+
+  function renderError(err) {
+    console.error(err);
+    $("#appt-list").innerHTML =
+      '<div class="error-state">Couldn\'t load appointments. Please check your connection and try refreshing.</div>';
+  }
+
+  function renderList(list, title) {
+    $("#list-title").textContent = title;
+    $("#list-meta").textContent = list.length + (list.length === 1 ? " patient" : " patients");
+    const container = $("#appt-list");
+
+    if (!list.length) {
+      container.innerHTML = '<div class="empty-state">No appointments to show.</div>';
+      return;
+    }
+
+    container.innerHTML = list.map(cardTemplate).join("");
+
+    $$(".appt-card", container).forEach((card) => {
+      const id = card.getAttribute("data-id");
+      const record = list.find((a) => a.id === id);
+
+      $(".appt-card__status-select", card).addEventListener("change", (e) =>
+        updateStatus(id, e.target.value, card)
+      );
+      $("[data-action='edit']", card)?.addEventListener("click", () => openEditModal(record));
+      $("[data-action='delete']", card)?.addEventListener("click", () => deleteAppointment(id, card));
+    });
+  }
+
+  function cardTemplate(appt) {
+    const phoneDigits = String(appt.phone).replace(/[^0-9+]/g, "");
+    const waMessage = encodeURIComponent(
+      `Hello ${appt.patient_name}, this is Aurelia Dental House regarding your appointment (Token ${appt.token}).`
+    );
+    const deleteBtn = canDelete()
+      ? '<button class="btn btn--ghost btn--sm" data-action="delete" type="button">Delete</button>'
+      : "";
+
+    return `
+      <article class="appt-card" data-id="${escapeHtml(appt.id)}">
+        <div class="appt-card__top">
+          <div>
+            <p class="appt-card__token">${escapeHtml(appt.token)}</p>
+            <p class="appt-card__name">${escapeHtml(appt.patient_name)}</p>
+            <p class="appt-card__meta">${escapeHtml(String(appt.age))} · ${escapeHtml(appt.gender)} · ${escapeHtml(appt.treatment)}</p>
+          </div>
+          <span class="status-badge" data-status="${escapeHtml(appt.status)}">${escapeHtml(appt.status)}</span>
+        </div>
+
+        <div class="appt-card__row">
+          <span><strong>${escapeHtml(appt.appointment_date)}</strong></span>
+          <span>${escapeHtml(appt.appointment_time)}</span>
+          <span>${escapeHtml(appt.phone)}</span>
+        </div>
+
+        <div class="appt-card__actions">
+          <select class="appt-card__status-select" aria-label="Update status">
+            ${STATUSES.map(
+              (s) => `<option ${s === appt.status ? "selected" : ""}>${s}</option>`
+            ).join("")}
+          </select>
+          <a class="btn btn--ghost btn--sm" href="tel:${phoneDigits}">Call</a>
+          <a class="btn btn--ghost btn--sm" href="https://wa.me/${phoneDigits}?text=${waMessage}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <button class="btn btn--ghost btn--sm" data-action="edit" type="button">Edit</button>
+          ${deleteBtn}
+        </div>
+      </article>
+    `;
+  }
+
+  /* ---------------- STATUS UPDATE ---------------- */
+  async function updateStatus(id, status, card) {
+    const select = $(".appt-card__status-select", card);
+    const badge = $(".status-badge", card);
+    const previous = badge.getAttribute("data-status");
+
+    // Optimistic UI — reverted below if the database rejects it
+    // (e.g. RLS denies it, or the row no longer matches this user's
+    // permitted rows). The database decision is always final.
+    badge.setAttribute("data-status", status);
+    badge.textContent = status;
+
+    const { error } = await sb.from("appointments").update({ status }).eq("id", id);
+
+    if (error) {
+      badge.setAttribute("data-status", previous);
+      badge.textContent = previous;
+      select.value = previous;
+      showToast("Couldn't update status — " + (error.message || "try again"), true);
+      return;
+    }
+    showToast(`${card.querySelector(".appt-card__token").textContent} marked as ${status}`);
+  }
+
+  /* ---------------- DELETE ---------------- */
+  async function deleteAppointment(id, card) {
+    const token = $(".appt-card__token", card).textContent;
+    if (!confirm(`Delete appointment ${token}? This cannot be undone.`)) return;
+
+    const { error } = await sb.from("appointments").delete().eq("id", id);
+
+    if (error) {
+      showToast("Couldn't delete — " + (error.message || "try again"), true);
+      return;
+    }
+    card.remove();
+    showToast(`${token} deleted`);
+    reloadCurrentView();
+  }
+
+  /* ---------------- EDIT / WALK-IN MODAL ---------------- */
+  let modalMode = "edit";
+  let modalRecordId = null;
+
+  function openEditModal(record) {
+    modalMode = "edit";
+    modalRecordId = record.id;
+    $("#modal-title").textContent = `Edit ${record.token}`;
+    $("#modal-save").textContent = "Save Changes";
+    $("#modal-readonly-row").hidden = false;
+    $("#modal-token-display").textContent = record.token;
+    $("#modal-created-display").textContent = new Date(record.created_at).toLocaleString();
+
+    $("#modal-name").value = record.patient_name;
+    $("#modal-phone").value = record.phone;
+    $("#modal-age").value = record.age;
+    $("#modal-gender").value = record.gender;
+    $("#modal-treatment").value = record.treatment;
+    $("#modal-date").value = record.appointment_date;
+    $("#modal-time").value = record.appointment_time;
+    $("#modal-status").value = record.status;
+    $("#modal-notes").value = record.notes || "";
+    $("#modal-status-msg").textContent = "";
+    $("#modal-backdrop").hidden = false;
+  }
+
+  function openWalkinModal() {
+    modalMode = "add";
+    modalRecordId = null;
+    $("#modal-title").textContent = "New Walk-in Appointment";
+    $("#modal-save").textContent = "Create & Generate Token";
+    $("#modal-readonly-row").hidden = true;
+    $("#modal-form").reset();
+    $("#modal-date").value = todayString();
+    $("#modal-status").value = "Appointment Confirmed";
+    $("#modal-status-msg").textContent = "";
+    $("#modal-backdrop").hidden = false;
+  }
+
+  function closeModal() {
+    $("#modal-backdrop").hidden = true;
+  }
+
+  /**
+   * Token generation.
+   * The existing appointments.token column is UNIQUE, but no
+   * database-side generator function exists yet (no sequence/RPC
+   * was created in Steps 1-3). Rather than inventing one silently,
+   * or falling back to a guessable sequential scheme (already
+   * flagged as insecure in the prior audit), this generates a
+   * short random, non-sequential code client-side and relies on
+   * the existing UNIQUE constraint to guarantee no collision is
+   * ever persisted — on a collision it simply regenerates and
+   * retries the insert.
+   *
+   * This is a reasonable interim approach, not a claim that it's
+   * optimal: a proper fix would be a database-side function (e.g.
+   * a SECURITY DEFINER RPC using a sequence) so token issuance is
+   * atomic and centrally controlled. That would be new SQL, which
+   * this task explicitly excludes — flagging it here as a
+   * follow-up rather than building it silently.
+   */
+  function generateCandidateToken() {
+    const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
+    let suffix = "";
+    for (let i = 0; i < 6; i++) {
+      suffix += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    return "D-" + suffix;
+  }
+
+  async function insertAppointmentWithToken(payload) {
+    const maxAttempts = 5;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const token = generateCandidateToken();
+      const { data, error } = await sb
+        .from("appointments")
+        .insert({ ...payload, token })
+        .select()
+        .single();
+
+      if (!error) return { data, error: null };
+
+      // 23505 = Postgres unique_violation. Only retry on that; any
+      // other error (e.g. RLS denial) should surface immediately.
+      const isUniqueViolation = error.code === "23505" || /duplicate key/i.test(error.message || "");
+      if (!isUniqueViolation) return { data: null, error };
+    }
+    return { data: null, error: { message: "Could not generate a unique token. Please try again." } };
+  }
+
+  async function handleModalSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const statusMsg = $("#modal-status-msg");
+    const saveBtn = $("#modal-save");
+
+    const payload = {
+      patient_name: form.patient_name.value.trim(),
+      phone: form.phone.value.trim(),
+      age: Number(form.age.value),
+      gender: form.gender.value,
+      treatment: form.treatment.value,
+      appointment_date: form.appointment_date.value,
+      appointment_time: form.appointment_time.value,
+      notes: form.notes.value.trim(),
+    };
+
+    if (!payload.patient_name || !payload.phone || !payload.age || !payload.appointment_date) {
+      statusMsg.textContent = "Please fill in all required fields.";
+      statusMsg.style.color = "var(--rust)";
+      return;
+    }
+
+    saveBtn.disabled = true;
+    statusMsg.style.color = "";
+    statusMsg.textContent = modalMode === "add" ? "Creating…" : "Saving…";
+
+    try {
+      let result;
+      if (modalMode === "add") {
+        payload.created_by = staffProfile.id;
+        result = await insertAppointmentWithToken(payload);
+      } else {
+        // Deliberately excludes id, token, created_at, created_by —
+        // those are protected by the Step 2 database trigger and
+        // are never part of an edit payload from this UI.
+        payload.status = form.status.value;
+        result = await sb.from("appointments").update(payload).eq("id", modalRecordId).select().single();
+      }
+
+      if (result.error) {
+        statusMsg.style.color = "var(--rust)";
+        statusMsg.textContent = result.error.message || "Something went wrong.";
+      } else {
+        statusMsg.style.color = "var(--success)";
+        statusMsg.textContent =
+          modalMode === "add" ? `Created — token ${result.data.token}` : "Saved successfully";
+        showToast(modalMode === "add" ? `Walk-in booked — token ${result.data.token}` : "Appointment updated");
+        setTimeout(() => {
+          closeModal();
+          reloadCurrentView();
+        }, 700);
+      }
+    } catch (err) {
+      statusMsg.style.color = "var(--rust)";
+      statusMsg.textContent = "Couldn't reach the server — check your connection.";
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
