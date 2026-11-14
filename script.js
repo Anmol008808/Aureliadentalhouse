@@ -73,8 +73,8 @@
      site never queries the `appointments` table directly, and has no
      Google Apps Script / Google Sheets dependency from here on.
      ---------------------------------------------------------------- */
-  const SUPABASE_URL = "https://xpffspawsuihjoetvvon.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_c7GcZSkIpCa5dfw_eexoEw_uE31bPsY";
+  const SUPABASE_URL = "https://awrltxqdslebnjnmknih.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3cmx0eHFkc2xlYm5qbm1rbmloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MzI0MzYsImV4cCI6MjEwMzMwODQzNn0.4fQ7QqT7cErrnHHWyQaM9LpTHlT0voDS9Qk2yVSwGJg";
 
   // reCAPTCHA v3 site key — this one is meant to be public (unlike
   // the secret key, which lives only in the book-appointment Edge
